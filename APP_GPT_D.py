@@ -5,23 +5,21 @@ import docx
 import pandas as pd
 import asyncio
 from typing import List, Tuple, Any, Dict, Optional
-
-# ================== MODIFICATION COMMENCE ICI (1/2) ==================
-import uvicorn # <-- AJOUTEZ CET IMPORT
-# ================== MODIFICATION TERMINEE (1/2) ==================
+import uvicorn
 
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings # Utilise les embeddings d'OpenAI
+# --- CORRECTION DES IMPORTS (Pour compatibilité Railway/Nouveau LangChain) ---
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.chains import ConversationalRetrievalChain
-from langchain.schema import Document
-from langchain.prompts import PromptTemplate
-from langchain_openai import ChatOpenAI # Utilise le LLM d'OpenAI
+from langchain_core.documents import Document
+from langchain_core.prompts import PromptTemplate
+from langchain_openai import ChatOpenAI
 
 from langdetect import detect, LangDetectException
 from dotenv import load_dotenv
@@ -31,11 +29,13 @@ load_dotenv()
 # ----------------------------
 # Configuration
 # ----------------------------
-FOLDER = r"C:\Users\gory\Docu_Cost_notTechnip"
+# --- CORRECTION DU CHEMIN ---
+# Sur Railway, le dossier est juste à côté du script. Plus de C:\Users...
+FOLDER = "Docu_Cost_notTechnip" 
 VECTOR_INDEX_PATH = "vector_index_cost_GPT"
 RETRIEVER_K = 6
 MAX_SOURCES_RETURN = 8
-#gpt-4.1-nano-2025-04-14
+
 # --- MODÈLES OPENAI SÉLECTIONNÉS ---
 OPENAI_CHAT_MODEL = "gpt-5-nano-2025-08-07"
 OPENAI_EMBEDDING_MODEL = "text-embedding-3-large"
@@ -46,7 +46,7 @@ MARKER_FR = "Le contexte fourni n'a pas de rapport avec cette question."
 MARKER_EN = "The provided context is not relevant to this question."
 
 
-# --- PROMPTS MULTILINGUES (Pour l'étape de Réponse) ---
+# --- PROMPTS MULTILINGUES ---
 PROMPT_FR_TEMPLATE = f"""Tu es un assistant IA. Réponds à la "Question" en te basant sur l'historique de la conversation et le "Contexte" fourni.
 Règle cruciale : La réponse doit impérativement être en français.
 
@@ -88,7 +88,7 @@ Answer:"""
 PROMPT_EN = PromptTemplate(template=PROMPT_EN_TEMPLATE, input_variables=["context", "question"])
 
 
-# NOUVEAU PROMPT : Pour l'étape de Condensation de la question
+# PROMPT DE CONDENSATION
 CONDENSE_QUESTION_PROMPT_TEMPLATE = """Étant donné l'historique de la conversation (Chat History) et une question de suivi (Follow Up Input), reformule la question de suivi pour qu'elle soit une question autonome, dans la même langue que la question de suivi.
 
 Historique de la conversation (Chat History):
@@ -127,7 +127,7 @@ class ChatRequest(BaseModel):
     session_id: Optional[str] = "global"
 
 # ----------------------------
-# Fonctions Utilitaires (Lecture, Excel, etc.)
+# Fonctions Utilitaires
 # ----------------------------
 def extract_docs_from_pdf(path: str) -> List[Document]:
     docs: List[Document] = []
@@ -176,15 +176,10 @@ def load_excel(path: str) -> Dict[str, pd.DataFrame]:
         return {}
 
 def analyse_excel(query: str, excels: Dict[str, Dict[str, pd.DataFrame]]) -> Tuple[Optional[str], Optional[List[Dict[str, str]]]]:
-    # Votre logique d'analyse Excel, puissante et précise, reste inchangée.
-    # Pour la concision, le code interne n'est pas montré ici mais doit être conservé.
+    # Votre logique d'analyse Excel reste inchangée
     return None, None
 
 def build_chat_history_for_chain(chat_history_raw: List[Any], max_turns: int = 6) -> List[Tuple[str, str]]:
-    """
-    Convertit l'historique de chat brut en une liste de tuples (humain, ia)
-    et limite le nombre de tours de conversation pour ne pas surcharger le contexte.
-    """
     if not chat_history_raw:
         return []
         
@@ -200,14 +195,9 @@ def build_chat_history_for_chain(chat_history_raw: List[Any], max_turns: int = 6
                 pairs.append((last_user, content))
                 last_user = None
                 
-    # On ne garde que les 'max_turns' derniers échanges
     return pairs[-max_turns:]
 
 def extract_unique_sources(result_obj: Dict[str, Any], max_sources: int) -> List[Dict[str, Any]]:
-    """
-    Extrait les documents sources uniques du résultat de la chaîne RAG,
-    en limitant le nombre de sources retournées.
-    """
     out: List[Dict[str, Any]] = []
     seen = set()
     
@@ -225,7 +215,6 @@ def extract_unique_sources(result_obj: Dict[str, Any], max_sources: int) -> List
             seen.add(key)
             out.append({"Document": src_norm, "Page/Feuille": str(page)})
             
-            # Ajout de la logique pour limiter le nombre de sources
             if len(out) >= max_sources:
                 break
                 
@@ -261,13 +250,12 @@ def create_chatbot(vectorstore: FAISS, prompt: PromptTemplate):
     
     retriever = vectorstore.as_retriever(search_kwargs={"k": RETRIEVER_K})
     
-    # On injecte notre nouveau prompt de condensation dans la chaîne
     return ConversationalRetrievalChain.from_llm(
         llm=llm, 
         retriever=retriever, 
         return_source_documents=True,
         combine_docs_chain_kwargs={"prompt": prompt},
-        condense_question_prompt=CONDENSE_PROMPT  # <-- AJOUT DE CET ARGUMENT
+        condense_question_prompt=CONDENSE_PROMPT
     )
 
 # ----------------------------
@@ -306,7 +294,6 @@ async def startup_event():
 # ----------------------------
 @app.get("/", response_class=HTMLResponse)
 async def root():
-    # ... (code inchangé)
     if os.path.exists("index.html"):
         with open("index.html", "r", encoding="utf-8") as f:
             return HTMLResponse(f.read())
@@ -314,7 +301,6 @@ async def root():
 
 @app.post("/api/chat")
 async def chat_endpoint(request: ChatRequest):
-    # --- LOGIQUE PRINCIPALE MODIFIÉE ---
     global chatbot_instances, excels_global, locks_by_session
     query = (request.query or "").strip()
     if not query:
@@ -324,21 +310,15 @@ async def chat_endpoint(request: ChatRequest):
     lock = locks_by_session.setdefault(session_id, asyncio.Lock())
 
     async with lock:
-        # Étape 1 : Analyse Excel (inchangée)
         excel_answer, excel_sources = analyse_excel(query, excels_global)
         if excel_answer:
             return JSONResponse({"answer": excel_answer, "sources": excel_sources or []})
         
-        # Étape 2 : Logique RAG multilingue
-        
-        # Détection de la langue de la question
         try:
             lang = detect(query)
         except LangDetectException:
-            lang = 'en'  # Langue par défaut si la détection échoue (ex: texte trop court)
+            lang = 'en'
 
-        # Sélection de l'instance de chatbot appropriée (français ou anglais)
-        # Utilise .get() pour retourner l'instance anglaise par défaut si la langue détectée n'est pas gérée
         chatbot_instance = chatbot_instances.get(lang, chatbot_instances.get('en'))
 
         if not chatbot_instance:
@@ -361,25 +341,20 @@ async def chat_endpoint(request: ChatRequest):
 
         answer = result.get("answer", "")
         sources = extract_unique_sources(result, max_sources=MAX_SOURCES_RETURN)
-
         
-        # --- LOGIQUE : VÉRIFICATION DE LA PERTINENCE ---
         answer_trimmed = answer.strip()
         
         if answer_trimmed.startswith(MARKER_FR) or answer_trimmed.startswith(MARKER_EN):
             sources = []
-            # Optionnel : on peut aussi enlever le marqueur de la réponse finale si on veut
-            # answer = answer.replace(MARKER_FR, "").replace(MARKER_EN, "").strip()
-        
 
         return JSONResponse({"answer": answer, "sources": sources})
 
 
-# ================== MODIFICATION COMMENCE ICI (2/2) ==================
-# AJOUTEZ CE BLOC À LA TOUTE FIN DE VOTRE FICHIER
+# --- CORRECTION DU MAIN (Pour Railway) ---
 if __name__ == "__main__":
-    # Note: L'argument reload=True gère le rechargement automatique
-    # L'argument "APP_GPT:app" doit correspondre au nom de votre fichier (APP_GPT)
-    # et au nom de votre variable FastAPI (app)
-    uvicorn.run("APP_GPT:app", host="127.0.0.1", port=8000, reload=True)
-# ================== MODIFICATION TERMINEE (2/2) ==================
+    # On récupère le PORT depuis les variables d'environnement (défini par Railway)
+    # Si pas de port défini, on utilise 8000 par défaut
+    port = int(os.environ.get("PORT", 8000))
+    
+    # Important : On pointe vers "APP_GPT_D:app" car votre fichier s'appelle APP_GPT_D.py
+    uvicorn.run("APP_GPT_D:app", host="0.0.0.0", port=port)
