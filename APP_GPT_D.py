@@ -8,14 +8,15 @@ from typing import List, Tuple, Any, Dict, Optional
 import uvicorn
 
 from fastapi import FastAPI, Request
-# --- AJOUT : Import nécessaire pour renvoyer une image
-from fastapi.responses import HTMLResponse, JSONResponse, FileResponse 
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+# --- IMPORTS ---
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
+# Note : On utilise l'import standard qui fonctionne avec vos versions figées
 from langchain.chains import ConversationalRetrievalChain
 from langchain_core.documents import Document
 from langchain_core.prompts import PromptTemplate
@@ -26,11 +27,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# ----------------------------
 # Configuration
+# ----------------------------
 FOLDER = "Docu_Cost_notTechnip" 
 VECTOR_INDEX_PATH = "vector_index_cost_GPT"
 RETRIEVER_K = 6
 MAX_SOURCES_RETURN = 8
+
 OPENAI_CHAT_MODEL = "gpt-5-nano-2025-08-07"
 OPENAI_EMBEDDING_MODEL = "text-embedding-3-large"
 
@@ -38,30 +42,103 @@ OPENAI_EMBEDDING_MODEL = "text-embedding-3-large"
 MARKER_FR = "Le contexte fourni n'a pas de rapport avec cette question."
 MARKER_EN = "The provided context is not relevant to this question."
 
-# Prompts (Je les garde condensés pour la lisibilité, ils sont identiques à avant)
-PROMPT_FR_TEMPLATE = f"""Tu es un assistant IA... (votre prompt habituel)... Réponse:"""
-PROMPT_FR = PromptTemplate(template=PROMPT_FR_TEMPLATE, input_variables=["context", "question"])
+# ----------------------------
+# DÉFINITION DES PROMPTS (VERSION SÉCURISÉE)
+# On n'utilise PAS de f-string (f"") pour éviter de casser les variables {context}
+# ----------------------------
 
-PROMPT_EN_TEMPLATE = f"""You are an AI assistant... (votre prompt habituel)... Answer:"""
-PROMPT_EN = PromptTemplate(template=PROMPT_EN_TEMPLATE, input_variables=["context", "question"])
+# 1. FRANÇAIS
+raw_template_fr = """Tu es un assistant IA. Réponds à la "Question" en te basant sur l'historique de la conversation et le "Contexte" fourni.
+Règle cruciale : La réponse doit impérativement être en français.
 
-CONDENSE_QUESTION_PROMPT_TEMPLATE = """Étant donné l'historique... (votre prompt habituel)..."""
+MARQUEUR SPÉCIAL (À UTILISER TEL QUEL) :
+Si le "Contexte" n'est pas pertinent, commence ta réponse par la phrase exacte : "MARKER_PLACEHOLDER" (avec l'espace à la fin).
+
+INSTRUCTIONS :
+1.  Priorité 1 : Utilise le "Contexte" ci-dessous pour répondre de manière factuelle à la "Question".
+2.  Priorité 2 : Si le "Contexte" ne contient pas la réponse ou n'est pas pertinent, utilise le "MARQUEUR SPÉCIAL" puis réponds à la "Question" en utilisant tes connaissances générales et l'historique de la conversation.
+3.  Priorité 3 : Si tu ne peux pas répondre du tout, dis-le poliment. N'invente pas une réponse.
+
+Contexte:
+{context}
+
+Question:
+{question}
+
+Réponse:"""
+
+# On injecte le marqueur via replace()
+final_template_fr = raw_template_fr.replace("MARKER_PLACEHOLDER", MARKER_FR)
+
+PROMPT_FR = PromptTemplate(
+    template=final_template_fr, 
+    input_variables=["context", "question"]
+)
+
+# 2. ANGLAIS
+raw_template_en = """You are an AI assistant. Answer the "Question" based on the conversation history and the provided "Context".
+Crucial rule: The answer must absolutely be in English.
+
+SPECIAL MARKER (USE AS IS):
+If the "Context" is not relevant, start your answer with the exact phrase: "MARKER_PLACEHOLDER" (with the space at the end).
+
+INSTRUCTIONS:
+1.  Priority 1: Use the "Context" below to factually answer the "Question".
+2.  Priority 2: If the "Context" does not contain the answer or is not relevant, use the "SPECIAL MARKER" and then answer the "Question" using your general knowledge and the conversation history.
+3.  Priority 3: If you cannot answer at all, state so politely. Do not invent an answer.
+
+Context:
+{context}
+
+Question:
+{question}
+
+Answer:"""
+
+final_template_en = raw_template_en.replace("MARKER_PLACEHOLDER", MARKER_EN)
+
+PROMPT_EN = PromptTemplate(
+    template=final_template_en, 
+    input_variables=["context", "question"]
+)
+
+# 3. CONDENSATION (Simple string, pas de variables complexes ici)
+CONDENSE_QUESTION_PROMPT_TEMPLATE = """Étant donné l'historique de la conversation (Chat History) et une question de suivi (Follow Up Input), reformule la question de suivi pour qu'elle soit une question autonome, dans la même langue que la question de suivi.
+
+Historique de la conversation (Chat History):
+{chat_history}
+
+Question de suivi (Follow Up Input): {question}
+
+Directives:
+- Si la question de suivi est déjà autonome, garde-la telle quelle.
+- Si la question de suivi fait référence à une réponse précédente (par exemple "multiplie le résultat", "et pour lui ?", "fais-le * 2"), trouve la valeur ou le sujet dans l'historique (par exemple, la "réponse" de l'Assistant) et incorpore-la dans la nouvelle question.
+
+Exemple:
+Historique: [("combien font 10+10?", "La réponse est 20.")]
+Question de suivi: "multiplie-le par 3"
+Question autonome: "Que fait 20 * 3?"
+
+Exemple 2:
+Historique: [("Parle-moi de Paris", "Paris est la capitale de la France.")]
+Question de suivi: "et pour Londres ?"
+Question autonome: "Parle-moi de Londres"
+
+Question autonome (Standalone question):"""
 CONDENSE_PROMPT = PromptTemplate.from_template(CONDENSE_QUESTION_PROMPT_TEMPLATE)
 
+
 # ----------------------------
-# Initialisation de FastAPI & FAVICON FIX
+# Initialisation de FastAPI
 # ----------------------------
 app = FastAPI()
 
-# 1. On monte le dossier static pour le CSS et JS
 if os.path.exists("static"):
     app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# 2. --- LA SOLUTION MAGIQUE POUR LE LOGO ---
-# Si le navigateur demande /favicon.ico, on lui envoie directement le fichier logo.png
+# Fix pour le logo (Favicon)
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
-    # Assurez-vous que le chemin est correct sur votre PC
     return FileResponse("static/images/logo.png")
 
 class ChatRequest(BaseModel):
@@ -69,14 +146,8 @@ class ChatRequest(BaseModel):
     chat_history: List[Any] = []
     session_id: Optional[str] = "global"
 
-# ... (Le reste de vos fonctions utilitaires : extract_docs, load_documents, etc. restent inchangées) ...
-# Je ne les remets pas ici pour ne pas faire un message de 3km, mais 
-# GARDEZ TOUT LE RESTE DE VOTRE CODE (fonctions et endpoints) IDENTIQUE.
-
-# ... (Vos fonctions extract_docs_from_pdf, etc.) ...
-
 # ----------------------------
-# Fonctions Utilitaires (Rappel pour copier-coller, assurez-vous de les avoir)
+# Fonctions Utilitaires
 # ----------------------------
 def extract_docs_from_pdf(path: str) -> List[Document]:
     docs: List[Document] = []
@@ -157,6 +228,9 @@ def extract_unique_sources(result_obj: Dict[str, Any], max_sources: int) -> List
             if len(out) >= max_sources: break
     return out
 
+# ----------------------------
+# Cœur du Chatbot (Logique RAG)
+# ----------------------------
 def get_or_create_vector_db(docs: List[Document], index_path: str = VECTOR_INDEX_PATH):
     if not docs: return None
     embeddings = OpenAIEmbeddings(model=OPENAI_EMBEDDING_MODEL)
@@ -175,9 +249,13 @@ def get_or_create_vector_db(docs: List[Document], index_path: str = VECTOR_INDEX
 
 def create_chatbot(vectorstore: FAISS, prompt: PromptTemplate):
     if not vectorstore: return None
-    # TEMPERATURE DOIT ETRE 1 POUR CE MODELE
+    
+    # --- CORRECTION TEMPERATURE ---
+    # Le modèle gpt-5-nano impose temperature=1
     llm = ChatOpenAI(model=OPENAI_CHAT_MODEL, temperature=1)
+    
     retriever = vectorstore.as_retriever(search_kwargs={"k": RETRIEVER_K})
+    
     return ConversationalRetrievalChain.from_llm(
         llm=llm, 
         retriever=retriever, 
@@ -186,6 +264,9 @@ def create_chatbot(vectorstore: FAISS, prompt: PromptTemplate):
         condense_question_prompt=CONDENSE_PROMPT
     )
 
+# ----------------------------
+# État de l'Application
+# ----------------------------
 chatbot_instances: Dict[str, ConversationalRetrievalChain] = {}
 excels_global: Dict[str, Dict[str, pd.DataFrame]] = {}
 locks_by_session: Dict[str, asyncio.Lock] = {}
@@ -195,11 +276,15 @@ def build_all_chatbots():
     if not os.getenv("OPENAI_API_KEY"):
         print("\n❌ ERREUR CRITIQUE : La variable d'environnement OPENAI_API_KEY n'est pas définie.\n")
         return
+
     docs = load_documents(FOLDER)
     vectorstore = get_or_create_vector_db(docs)
+    
     if vectorstore:
         chatbot_instances['fr'] = create_chatbot(vectorstore, PROMPT_FR)
+        print("🤖 Instance de chatbot FRANÇAIS créée.")
         chatbot_instances['en'] = create_chatbot(vectorstore, PROMPT_EN)
+        print("🤖 Instance de chatbot ANGLAIS créée.")
 
 @app.on_event("startup")
 async def startup_event():
@@ -210,6 +295,9 @@ async def startup_event():
         for file in excel_files:
             excels_global[file] = load_excel(os.path.join(FOLDER, file))
 
+# ----------------------------
+# Routes
+# ----------------------------
 @app.get("/", response_class=HTMLResponse)
 async def root():
     if os.path.exists("index.html"):
@@ -239,14 +327,21 @@ async def chat_endpoint(request: ChatRequest):
         try:
             result = await asyncio.to_thread(chatbot_instance.invoke, {"question": query, "chat_history": chat_history_tuples})
         except Exception as e:
+            print(f"ERREUR: {e}")
             return JSONResponse({"answer": "⚠️ Erreur interne.", "sources": []})
 
         answer = result.get("answer", "")
         sources = extract_unique_sources(result, max_sources=MAX_SOURCES_RETURN)
+        
         answer_trimmed = answer.strip()
-        if answer_trimmed.startswith(MARKER_FR) or answer_trimmed.startswith(MARKER_EN): sources = []
+        if answer_trimmed.startswith(MARKER_FR) or answer_trimmed.startswith(MARKER_EN):
+            sources = []
+            
         return JSONResponse({"answer": answer, "sources": sources})
 
+# ----------------------------
+# MAIN (Pour Railway)
+# ----------------------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run("APP_GPT_D:app", host="0.0.0.0", port=port)
