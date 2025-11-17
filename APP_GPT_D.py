@@ -23,6 +23,10 @@ from langchain_openai import ChatOpenAI
 
 from langdetect import detect, LangDetectException
 from dotenv import load_dotenv
+from fastapi.responses import FileResponse
+
+
+
 
 load_dotenv()
 
@@ -349,8 +353,13 @@ async def chat_endpoint(request: ChatRequest):
 
         return JSONResponse({"answer": answer, "sources": sources})
 
-
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    # On renvoie le fichier logo.png quand le navigateur demande le favicon
+    return FileResponse("static/images/logo.png")
 # --- CORRECTION DU MAIN (Pour Railway) ---
+
+
 if __name__ == "__main__":
     # On récupère le PORT depuis les variables d'environnement (défini par Railway)
     # Si pas de port défini, on utilise 8000 par défaut
