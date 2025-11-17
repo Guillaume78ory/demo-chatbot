@@ -1,0 +1,1 @@
+web: uvicorn APP_GPT_D:app --host 0.0.0.0 --port $PORT
