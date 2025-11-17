@@ -246,7 +246,7 @@ def get_or_create_vector_db(docs: List[Document], index_path: str = VECTOR_INDEX
 def create_chatbot(vectorstore: FAISS, prompt: PromptTemplate):
     if not vectorstore: return None
     
-    llm = ChatOpenAI(model=OPENAI_CHAT_MODEL, temperature=0)
+    llm = ChatOpenAI(model=OPENAI_CHAT_MODEL)
     
     retriever = vectorstore.as_retriever(search_kwargs={"k": RETRIEVER_K})
     
