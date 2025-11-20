@@ -3,20 +3,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatBox = document.getElementById('chat-box');
     const userInput = document.getElementById('user-input');
     const sendBtn = document.getElementById('send-btn');
-    
-    // Boutons
     const themeToggleBtn = document.getElementById('theme-toggle');
-    const historyToggleBtn = document.getElementById('history-toggle');
-    // Le bouton de fermeture de la sidebar
-    const closeHistoryBtn = document.getElementById('close-history'); 
-    
-    const appWrapper = document.querySelector('.app-wrapper');
-    const historyList = document.getElementById('history-list');
-    
     let chatHistory = [];
 
+    const appWrapper = document.querySelector('.app-wrapper');
+    const historyToggleBtn = document.getElementById('history-toggle');
+    const historyList = document.getElementById('history-list');
+    const closeHistoryBtn = document.getElementById('close-history');
+
     // --- GESTION DU THÈME ---
-    
     function enableDarkMode() {
         document.body.classList.remove('light-mode');
         document.body.classList.add('dark-mode');
@@ -29,19 +24,14 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('theme', 'light');
     }
 
-    // --- INITIALISATION DU THÈME ---
+    // Au chargement, on force le mode sombre SAUF si l'utilisateur a explicitement voulu du clair
     const savedTheme = localStorage.getItem('theme');
-
-    // Si l'utilisateur a explicitement choisi le mode CLAIR, on le met
     if (savedTheme === 'light') {
         enableLightMode();
-    } 
-    // Dans TOUS les autres cas (première visite ou 'dark'), on met le sombre
-    else {
+    } else {
         enableDarkMode();
     }
 
-    // Bascule du thème au clic
     themeToggleBtn.addEventListener('click', () => {
         if (document.body.classList.contains('dark-mode')) {
             enableLightMode();
@@ -50,21 +40,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- GESTION DE L'HISTORIQUE ---
-
-    // Ouvrir/Fermer avec le bouton "Horloge"
+    // --- HISTORIQUE ---
     historyToggleBtn.addEventListener('click', () => {
         appWrapper.classList.toggle('history-open');
     });
 
-    // Fermer avec le bouton "X" dans la sidebar
     if (closeHistoryBtn) {
         closeHistoryBtn.addEventListener('click', () => {
             appWrapper.classList.remove('history-open');
         });
     }
-
-    // --- FONCTIONS ADDITIONNELLES ---
 
     function addHistoryItem(text, messageId) {
         const li = document.createElement('li');
@@ -88,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         historyList.prepend(li);
     }
 
+    // --- CHAT ---
     function isRefusal(message) {
         const lowerCaseMessage = message.toLowerCase();
         const refusalPhrases = [
@@ -144,12 +130,17 @@ document.addEventListener('DOMContentLoaded', () => {
         userInput.disabled = true;
         sendBtn.disabled = true;
 
+        // --- ICI : La structure HTML qui utilise les classes CSS d'animation ---
         const loadingMessageElement = document.createElement('div');
         loadingMessageElement.classList.add('message', 'bot-message');
         loadingMessageElement.innerHTML = `
             <div class="loading-message-container">
                 <div class="inline-spinner"></div>
-                <p><i>L'assistant réfléchit...</i></p>
+                <p>
+                    <i>L'assistant réfléchit
+                    <span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span>
+                    </i>
+                </p>
             </div>
         `;
         chatBox.appendChild(loadingMessageElement);
@@ -187,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sendMessage();
         });
     } else {
-        console.error("Formulaire introuvable.");
+        console.error("ERREUR CRITIQUE : Le formulaire avec l'ID 'chat-form' est introuvable.");
     }
 
     // --- FONCTIONS UTILITAIRES ---
