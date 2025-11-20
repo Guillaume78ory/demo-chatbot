@@ -1,37 +1,39 @@
 /* =========================================
-   1. CONFIGURATION & VARIABLES
+   1. VARIABLES & CONFIGURATION
    ========================================= */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
 :root {
-    --primary-color: #0070ef;
-    --primary-hover: #0056b3;
+    /* MODIFICATION : Nouvelle couleur demandée (#0074bd) */
+    --primary-color: #0074bd; 
+    --primary-hover: #005fa3; /* Une version légèrement plus sombre pour le survol */
     
-    /* Mode Clair (Light) */
+    /* Mode Clair */
     --bg-light: #f4f6f8;
     --surface-light: #ffffff;
     --text-main-light: #1a1d21;
-    --text-secondary-light: #5f6368;
     --border-light: #e0e0e0;
-    --msg-bot-light: #f0f2f5;
+    --msg-bot-light: #e5e5ea;
     
-    /* Mode Sombre (Dark) */
+    /* Couleurs spécifiques Header/Footer en mode clair */
+    --header-bg-light: #0074bd; /* MODIFIÉ */
+    --footer-bg-light: #0074bd; /* MODIFIÉ */
+    --header-text-light: #ffffff; /* Texte blanc sur fond bleu */
+
+    /* Mode Sombre */
     --bg-dark: #1a1d21;
     --surface-dark: #222529;
     --header-dark: #2c3036;
     --text-main-dark: #e3e6e8;
-    --text-secondary-dark: #9ca3af;
     --border-dark: #3b4048;
     --msg-bot-dark: #2c3036;
-    --msg-user-dark: #3b82f6;
 }
 
 /* =========================================
-   2. STYLES GÉNÉRAUX
+   2. STYLE GÉNÉRAL
    ========================================= */
-
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Inter', sans-serif;
     margin: 0;
     height: 100vh;
     overflow: hidden;
@@ -43,79 +45,76 @@ body.light-mode {
     background-color: var(--bg-light);
     color: var(--text-main-light);
 }
-body.light-mode .chat-container { background-color: var(--surface-light); }
-body.light-mode .chat-header { background-color: var(--surface-light); border-bottom: 1px solid var(--border-light); }
-body.light-mode .header-text h1 { color: var(--text-main-light); }
-body.light-mode .header-text p { color: var(--text-secondary-light); }
-body.light-mode #history-sidebar { background-color: var(--surface-light); border-right: 1px solid var(--border-light); }
-body.light-mode .sidebar-header { border-bottom: 1px solid var(--border-light); }
-body.light-mode .bot-message { background-color: var(--msg-bot-light); color: var(--text-main-light); }
+body.light-mode .chat-container, body.light-mode #history-sidebar { background-color: var(--surface-light); }
+
+/* Header et Footer en mode clair utilisent la nouvelle couleur bleue */
+body.light-mode .chat-header { 
+    background-color: var(--header-bg-light); 
+    color: var(--header-text-light);
+    border-bottom: none; /* Pas de bordure sur le fond bleu */
+}
+body.light-mode .header-text h1, body.light-mode .header-text p { color: var(--header-text-light); }
+body.light-mode .theme-toggle-button, body.light-mode #history-toggle { color: var(--header-text-light); }
+
+body.light-mode .chat-footer { 
+    background-color: var(--footer-bg-light); 
+    color: var(--header-text-light); 
+}
+
+body.light-mode #history-sidebar { border-right: 1px solid var(--border-light); }
+body.light-mode .bot-message { background-color: var(--msg-bot-light); color: #333; }
 body.light-mode .user-message { background-color: var(--primary-color); color: white; }
-body.light-mode #user-input { background-color: var(--surface-light); color: var(--text-main-light); border-color: var(--border-light); }
-body.light-mode #history-list li { border: 1px solid var(--border-light); }
-body.light-mode #history-list li:hover { background-color: var(--msg-bot-light); }
-body.light-mode .theme-toggle-button, body.light-mode .icon-btn { color: var(--text-main-light); }
+body.light-mode #user-input { background: white; color: #333; border-color: #ccc; }
+body.light-mode #history-list li { border: 1px solid var(--border-light); background: white; }
+body.light-mode #history-list li:hover { background-color: #f0f0f0; }
+body.light-mode .icon-btn { color: #333; }
+body.light-mode .sidebar-header { border-bottom: 1px solid var(--border-light); }
 
 /* --- Thème Sombre (Défaut) --- */
 body.dark-mode {
     background-color: var(--bg-dark);
     color: var(--text-main-dark);
 }
-body.dark-mode .chat-container { background-color: var(--surface-dark); }
+body.dark-mode .chat-container, body.dark-mode #history-sidebar { background-color: var(--surface-dark); }
 body.dark-mode .chat-header { background-color: var(--header-dark); border-bottom: 1px solid var(--border-dark); }
-body.dark-mode .header-text h1 { color: var(--text-main-dark); }
-body.dark-mode .header-text p { color: var(--text-secondary-dark); }
-body.dark-mode #history-sidebar { background-color: #15171a; border-right: 1px solid var(--border-dark); }
 body.dark-mode .sidebar-header { border-bottom: 1px solid var(--border-dark); }
+body.dark-mode #history-sidebar { border-right: 1px solid var(--border-dark); }
 body.dark-mode .bot-message { background-color: var(--msg-bot-dark); color: var(--text-main-dark); }
-body.dark-mode .user-message { background-color: var(--msg-user-dark); color: white; }
-body.dark-mode #user-input { background-color: var(--header-dark); color: var(--text-main-dark); border-color: var(--border-dark); }
+body.dark-mode .user-message { background-color: #3b82f6; color: white; }
+body.dark-mode #user-input { background-color: var(--header-dark); color: white; border-color: var(--border-dark); }
 body.dark-mode #history-list li { background-color: var(--header-dark); border: 1px solid var(--border-dark); color: var(--text-main-dark); }
 body.dark-mode #history-list li:hover { background-color: var(--border-dark); }
-body.dark-mode .theme-toggle-button, body.dark-mode .icon-btn { color: var(--text-main-dark); }
-body.dark-mode .chat-footer { color: var(--text-secondary-dark); }
-
+body.dark-mode .icon-btn, body.dark-mode .theme-toggle-button { color: white; }
+body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border-dark); }
 
 /* =========================================
-   3. LAYOUT
+   3. STRUCTURE
    ========================================= */
-
-.app-wrapper {
-    display: flex;
-    width: 100vw;
-    height: 100vh;
-}
+.app-wrapper { display: flex; width: 100vw; height: 100vh; }
 
 .chat-container {
     flex: 1;
     display: flex;
     flex-direction: column;
     height: 100vh;
-    position: relative;
     min-width: 0;
 }
 
 /* =========================================
    4. SIDEBAR HISTORIQUE
    ========================================= */
-
 #history-sidebar {
     width: 0;
     overflow: hidden;
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Animation fluide */
+    transition: width 0.3s ease;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
     height: 100vh;
-    white-space: nowrap;
 }
 
-/* Classe ajoutée par JS pour ouvrir */
-.app-wrapper.history-open #history-sidebar {
-    width: 320px;
-}
+.app-wrapper.history-open #history-sidebar { width: 300px; }
 
-/* En-tête de la sidebar (Titre + Croix) */
 .sidebar-header {
     display: flex;
     justify-content: space-between;
@@ -123,85 +122,68 @@ body.dark-mode .chat-footer { color: var(--text-secondary-dark); }
     padding: 20px;
     flex-shrink: 0;
 }
+.sidebar-header h2 { margin: 0; font-size: 1.2rem; }
 
-.sidebar-header h2 {
-    margin: 0;
-    font-size: 1.2rem;
-    font-weight: 600;
-}
-
-.icon-btn {
+#close-history {
     background: none;
     border: none;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     cursor: pointer;
-    padding: 8px;
-    border-radius: 8px;
-    transition: background-color 0.2s;
+    padding: 5px;
+    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
-.icon-btn:hover {
-    background-color: rgba(128, 128, 128, 0.15);
-}
+#close-history:hover { background-color: rgba(128,128,128,0.2); }
 
 #history-list {
     padding: 15px;
+    margin: 0;
+    list-style: none;
     overflow-y: auto;
     flex-grow: 1;
-    list-style: none;
-    margin: 0;
 }
 
 #history-list li {
-    padding: 12px 15px;
+    padding: 12px;
     margin-bottom: 8px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 0.9rem;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    transition: transform 0.1s, background-color 0.2s;
-}
-
-#history-list li:active {
-    transform: scale(0.98);
 }
 
 /* =========================================
-   5. HEADER CHAT
+   5. HEADER & LOGO MODIFIÉ
    ========================================= */
-
 .chat-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 25px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    z-index: 10;
+    padding: 15px 20px;
     flex-shrink: 0;
 }
 
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
+.header-left { display: flex; align-items: center; gap: 15px; }
 
+/* MODIFICATION : Suppression du contour/padding/background */
 .logo {
-    width: 45px;
-    height: 45px;
-    border-radius: 10px;
+    width: 50px; /* Un peu plus grand car sans padding */
+    height: 50px;
     object-fit: contain;
-    background: white;
-    padding: 2px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    /* Suppression explicite des bordures/fonds */
+    background: transparent;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
 }
 
-.header-text h1 { font-size: 1.1rem; font-weight: 600; margin: 0; }
-.header-text p { font-size: 0.85rem; margin: 2px 0 0; opacity: 0.8; }
+.header-text h1 { font-size: 1.3rem; margin: 0; font-weight: 600; }
+.header-text p { font-size: 0.85rem; margin: 2px 0 0; opacity: 0.9; }
 
 .theme-toggle-button {
     background: none;
@@ -211,112 +193,99 @@ body.dark-mode .chat-footer { color: var(--text-secondary-dark); }
     padding: 8px;
     border-radius: 50%;
     margin-left: 10px;
-    transition: background-color 0.2s;
 }
-.theme-toggle-button:hover { background-color: rgba(128, 128, 128, 0.15); }
+.theme-toggle-button:hover { background-color: rgba(255,255,255,0.2); }
 
-/* Gestion des icônes Lune/Soleil */
-/* En mode Sombre, on affiche le Soleil (pour passer en jour) */
+/* Gestion icones */
+.theme-toggle-button .icon-sun { display: none; }
+.theme-toggle-button .icon-moon { display: inline-block; }
+
 body.dark-mode .theme-toggle-button .icon-moon { display: none; }
 body.dark-mode .theme-toggle-button .icon-sun { display: inline-block; }
-
-/* En mode Clair, on affiche la Lune (pour passer en nuit) */
-body.light-mode .theme-toggle-button .icon-sun { display: none; }
-body.light-mode .theme-toggle-button .icon-moon { display: inline-block; }
-
 
 /* =========================================
    6. MESSAGES
    ========================================= */
-
 .chat-box {
     flex-grow: 1;
-    padding: 25px 50px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
     overflow-y: auto;
-    scroll-behavior: smooth;
 }
-@media (max-width: 768px) { .chat-box { padding: 20px 15px; } }
 
 .message {
     max-width: 80%;
-    padding: 14px 20px;
+    padding: 12px 18px;
     border-radius: 18px;
-    line-height: 1.6;
-    font-size: 0.95rem;
-    position: relative;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    line-height: 1.5;
 }
 
 .bot-message { align-self: flex-start; border-bottom-left-radius: 4px; }
 .user-message { align-self: flex-end; border-bottom-right-radius: 4px; }
 
+.bot-message ul { margin-top: 8px; padding-left: 20px; }
 .bot-message strong { color: #60a5fa; }
 body.light-mode .bot-message strong { color: var(--primary-color); }
-.bot-message ul { margin: 10px 0 0 0; padding-left: 20px; }
 
 /* =========================================
-   7. INPUT
+   7. INPUT & BOUTON FLÈCHE
    ========================================= */
-
 .input-area {
-    padding: 20px 30px;
+    padding: 20px;
     display: flex;
-    gap: 12px;
-    align-items: center;
-    flex-shrink: 0;
+    gap: 10px;
+    border-top: 1px solid transparent;
 }
+body.light-mode .input-area { border-color: var(--border-light); }
+body.dark-mode .input-area { border-color: var(--border-dark); }
 
 #user-input {
     flex-grow: 1;
-    padding: 14px 20px;
+    padding: 14px 20px; /* Un peu plus grand pour le confort */
     border-radius: 25px;
     border-width: 1px;
     border-style: solid;
     outline: none;
     font-size: 1rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-    transition: all 0.2s;
 }
-#user-input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0,112,239,0.15); }
+#user-input:focus { border-color: var(--primary-color); }
 
+/* MODIFICATION : Bouton Flèche Rond */
 #send-btn {
-    padding: 0 25px;
+    width: 50px;
     height: 50px;
-    border-radius: 25px;
+    padding: 0;
+    border-radius: 50%;
     background-color: var(--primary-color);
     color: white;
     border: none;
     cursor: pointer;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: transform 0.1s, background-color 0.2s;
+    font-size: 1.2rem; /* Taille de la flèche */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, transform 0.1s;
 }
-#send-btn:hover { background-color: var(--primary-hover); transform: scale(1.02); }
+#send-btn:hover { background-color: var(--primary-hover); transform: scale(1.05); }
+#send-btn:active { transform: scale(0.95); }
 
 /* =========================================
-   8. DIVERS
+   8. FOOTER & DIVERS
    ========================================= */
-
 .chat-footer {
     padding: 10px;
     text-align: center;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     flex-shrink: 0;
 }
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #555; }
+.chat-footer p { margin: 2px 0; }
 
 /* Spinner */
 .loading-message-container { display: flex; align-items: center; gap: 10px; }
 .inline-spinner {
-    width: 18px; height: 18px;
+    width: 16px; height: 16px;
     border: 2px solid rgba(128,128,128,0.3);
     border-top-color: var(--primary-color);
     border-radius: 50%;
@@ -324,5 +293,4 @@ body.light-mode .bot-message strong { color: var(--primary-color); }
 }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
-/* Surlignage */
 .message.highlight { box-shadow: 0 0 0 3px var(--primary-color); transition: box-shadow 0.3s; }
