@@ -1,12 +1,9 @@
 /* =========================================
    1. CONFIGURATION & VARIABLES
    ========================================= */
-
-/* Import de la police Inter pour un look moderne */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
 :root {
-    /* Couleurs de base */
     --primary-color: #0070ef;
     --primary-hover: #0056b3;
     
@@ -17,9 +14,7 @@
     --text-secondary-light: #5f6368;
     --border-light: #e0e0e0;
     --msg-bot-light: #f0f2f5;
-    --msg-user-light: #0070ef;
-    --msg-user-text-light: #ffffff;
-
+    
     /* Mode Sombre (Dark) */
     --bg-dark: #1a1d21;
     --surface-dark: #222529;
@@ -29,11 +24,10 @@
     --border-dark: #3b4048;
     --msg-bot-dark: #2c3036;
     --msg-user-dark: #3b82f6;
-    --msg-user-text-dark: #ffffff;
 }
 
 /* =========================================
-   2. STYLES GÉNÉRAUX & RESET
+   2. STYLES GÉNÉRAUX
    ========================================= */
 
 body {
@@ -56,7 +50,7 @@ body.light-mode .header-text p { color: var(--text-secondary-light); }
 body.light-mode #history-sidebar { background-color: var(--surface-light); border-right: 1px solid var(--border-light); }
 body.light-mode .sidebar-header { border-bottom: 1px solid var(--border-light); }
 body.light-mode .bot-message { background-color: var(--msg-bot-light); color: var(--text-main-light); }
-body.light-mode .user-message { background-color: var(--msg-user-light); color: var(--msg-user-text-light); }
+body.light-mode .user-message { background-color: var(--primary-color); color: white; }
 body.light-mode #user-input { background-color: var(--surface-light); color: var(--text-main-light); border-color: var(--border-light); }
 body.light-mode #history-list li { border: 1px solid var(--border-light); }
 body.light-mode #history-list li:hover { background-color: var(--msg-bot-light); }
@@ -74,7 +68,7 @@ body.dark-mode .header-text p { color: var(--text-secondary-dark); }
 body.dark-mode #history-sidebar { background-color: #15171a; border-right: 1px solid var(--border-dark); }
 body.dark-mode .sidebar-header { border-bottom: 1px solid var(--border-dark); }
 body.dark-mode .bot-message { background-color: var(--msg-bot-dark); color: var(--text-main-dark); }
-body.dark-mode .user-message { background-color: var(--msg-user-dark); color: var(--msg-user-text-dark); }
+body.dark-mode .user-message { background-color: var(--msg-user-dark); color: white; }
 body.dark-mode #user-input { background-color: var(--header-dark); color: var(--text-main-dark); border-color: var(--border-dark); }
 body.dark-mode #history-list li { background-color: var(--header-dark); border: 1px solid var(--border-dark); color: var(--text-main-dark); }
 body.dark-mode #history-list li:hover { background-color: var(--border-dark); }
@@ -83,7 +77,7 @@ body.dark-mode .chat-footer { color: var(--text-secondary-dark); }
 
 
 /* =========================================
-   3. LAYOUT PRINCIPAL
+   3. LAYOUT
    ========================================= */
 
 .app-wrapper {
@@ -98,11 +92,11 @@ body.dark-mode .chat-footer { color: var(--text-secondary-dark); }
     flex-direction: column;
     height: 100vh;
     position: relative;
-    min-width: 0; /* Empêche le flex item de déborder */
+    min-width: 0;
 }
 
 /* =========================================
-   4. SIDEBAR (HISTORIQUE)
+   4. SIDEBAR HISTORIQUE
    ========================================= */
 
 #history-sidebar {
@@ -113,13 +107,15 @@ body.dark-mode .chat-footer { color: var(--text-secondary-dark); }
     flex-direction: column;
     flex-shrink: 0;
     height: 100vh;
-    white-space: nowrap; /* Empêche le texte de se casser pendant l'animation */
+    white-space: nowrap;
 }
 
+/* Classe ajoutée par JS pour ouvrir */
 .app-wrapper.history-open #history-sidebar {
     width: 320px;
 }
 
+/* En-tête de la sidebar (Titre + Croix) */
 .sidebar-header {
     display: flex;
     justify-content: space-between;
@@ -130,7 +126,7 @@ body.dark-mode .chat-footer { color: var(--text-secondary-dark); }
 
 .sidebar-header h2 {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 600;
 }
 
@@ -174,9 +170,8 @@ body.dark-mode .chat-footer { color: var(--text-secondary-dark); }
     transform: scale(0.98);
 }
 
-
 /* =========================================
-   5. HEADER DU CHAT
+   5. HEADER CHAT
    ========================================= */
 
 .chat-header {
@@ -196,8 +191,8 @@ body.dark-mode .chat-footer { color: var(--text-secondary-dark); }
 }
 
 .logo {
-    width: 42px;
-    height: 42px;
+    width: 45px;
+    height: 45px;
     border-radius: 10px;
     object-fit: contain;
     background: white;
@@ -205,93 +200,65 @@ body.dark-mode .chat-footer { color: var(--text-secondary-dark); }
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.header-text h1 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0;
-}
-
-.header-text p {
-    font-size: 0.8rem;
-    margin: 2px 0 0;
-    opacity: 0.8;
-}
+.header-text h1 { font-size: 1.1rem; font-weight: 600; margin: 0; }
+.header-text p { font-size: 0.85rem; margin: 2px 0 0; opacity: 0.8; }
 
 .theme-toggle-button {
     background: none;
     border: none;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     cursor: pointer;
     padding: 8px;
     border-radius: 50%;
-    margin-left: 8px;
+    margin-left: 10px;
     transition: background-color 0.2s;
 }
-
-.theme-toggle-button:hover {
-    background-color: rgba(128, 128, 128, 0.15);
-}
+.theme-toggle-button:hover { background-color: rgba(128, 128, 128, 0.15); }
 
 /* Gestion des icônes Lune/Soleil */
-.theme-toggle-button .icon-moon { display: none; }
-body.dark-mode .theme-toggle-button .icon-sun { display: none; }
-body.dark-mode .theme-toggle-button .icon-moon { display: inline-block; }
+/* En mode Sombre, on affiche le Soleil (pour passer en jour) */
+body.dark-mode .theme-toggle-button .icon-moon { display: none; }
+body.dark-mode .theme-toggle-button .icon-sun { display: inline-block; }
+
+/* En mode Clair, on affiche la Lune (pour passer en nuit) */
+body.light-mode .theme-toggle-button .icon-sun { display: none; }
+body.light-mode .theme-toggle-button .icon-moon { display: inline-block; }
 
 
 /* =========================================
-   6. ZONE DE CHAT (MESSAGES)
+   6. MESSAGES
    ========================================= */
 
 .chat-box {
     flex-grow: 1;
-    padding: 20px 50px; /* Marges latérales plus larges pour la lisibilité */
+    padding: 25px 50px;
     display: flex;
     flex-direction: column;
     gap: 20px;
     overflow-y: auto;
     scroll-behavior: smooth;
 }
-
-/* Sur mobile, on réduit les marges */
-@media (max-width: 768px) {
-    .chat-box { padding: 20px 15px; }
-}
+@media (max-width: 768px) { .chat-box { padding: 20px 15px; } }
 
 .message {
     max-width: 80%;
-    padding: 16px 20px;
+    padding: 14px 20px;
     border-radius: 18px;
     line-height: 1.6;
     font-size: 0.95rem;
     position: relative;
-    word-wrap: break-word;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
-.bot-message {
-    align-self: flex-start;
-    border-bottom-left-radius: 4px;
-}
+.bot-message { align-self: flex-start; border-bottom-left-radius: 4px; }
+.user-message { align-self: flex-end; border-bottom-right-radius: 4px; }
 
-.user-message {
-    align-self: flex-end;
-    border-bottom-right-radius: 4px;
-    font-weight: 500;
-}
-
-/* Liens et listes dans les messages */
-.bot-message strong { color: var(--primary-color); }
-body.dark-mode .bot-message strong { color: #60a5fa; }
-
-.bot-message ul {
-    margin: 10px 0 0 0;
-    padding-left: 20px;
-}
-.bot-message li { margin-bottom: 5px; }
-
+.bot-message strong { color: #60a5fa; }
+body.light-mode .bot-message strong { color: var(--primary-color); }
+.bot-message ul { margin: 10px 0 0 0; padding-left: 20px; }
 
 /* =========================================
-   7. ZONE DE SAISIE (INPUT)
+   7. INPUT
    ========================================= */
 
 .input-area {
@@ -311,80 +278,45 @@ body.dark-mode .bot-message strong { color: #60a5fa; }
     outline: none;
     font-size: 1rem;
     box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: all 0.2s;
 }
-
-#user-input:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(0, 112, 239, 0.15);
-}
+#user-input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(0,112,239,0.15); }
 
 #send-btn {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
+    padding: 0 25px;
+    height: 50px;
+    border-radius: 25px;
     background-color: var(--primary-color);
     color: white;
     border: none;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
+    font-weight: 600;
+    font-size: 1rem;
     transition: transform 0.1s, background-color 0.2s;
-    flex-shrink: 0;
 }
-
-#send-btn:hover {
-    background-color: var(--primary-hover);
-    transform: scale(1.05);
-}
-
-#send-btn:active {
-    transform: scale(0.95);
-}
+#send-btn:hover { background-color: var(--primary-hover); transform: scale(1.02); }
 
 /* =========================================
-   8. PIED DE PAGE & ÉLÉMENTS DIVERS
+   8. DIVERS
    ========================================= */
 
 .chat-footer {
     padding: 10px;
     text-align: center;
     font-size: 0.75rem;
-    opacity: 0.7;
     flex-shrink: 0;
 }
 
-.chat-footer p { margin: 2px 0; }
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
 
-/* Scrollbar moderne (Webkit) */
-::-webkit-scrollbar {
-    width: 8px;
-}
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
-}
-body.dark-mode ::-webkit-scrollbar-thumb {
-    background: #4b5563;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
-}
-
-/* Animation de chargement (Spinner) */
-.loading-message-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
+/* Spinner */
+.loading-message-container { display: flex; align-items: center; gap: 10px; }
 .inline-spinner {
-    width: 18px;
-    height: 18px;
+    width: 18px; height: 18px;
     border: 2px solid rgba(128,128,128,0.3);
     border-top-color: var(--primary-color);
     border-radius: 50%;
@@ -393,7 +325,4 @@ body.dark-mode ::-webkit-scrollbar-thumb {
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
 /* Surlignage */
-.message.highlight {
-    box-shadow: 0 0 0 2px var(--primary-color);
-    transition: box-shadow 0.3s;
-}
+.message.highlight { box-shadow: 0 0 0 3px var(--primary-color); transition: box-shadow 0.3s; }
