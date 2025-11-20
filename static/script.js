@@ -6,12 +6,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggleBtn = document.getElementById('theme-toggle');
     let chatHistory = [];
 
-    /* --- AJOUT : Sélecteurs pour l'historique --- */
+    /* --- SÉLECTEURS HISTORIQUE --- */
     const appWrapper = document.querySelector('.app-wrapper');
     const historyToggleBtn = document.getElementById('history-toggle');
     const historyList = document.getElementById('history-list');
+    
+    // NOUVEAU : Le bouton de fermeture dans la sidebar
+    const closeHistoryBtn = document.getElementById('close-history');
 
-    // --- GESTION DU MODE NUIT ---
+    // --- GESTION DU THÈME ---
     function enableDarkMode() {
         document.body.classList.remove('light-mode');
         document.body.classList.add('dark-mode');
@@ -24,11 +27,15 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('theme', 'light');
     }
 
+    // LOGIQUE CORRIGÉE : Démarrage en Dark Mode par défaut
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        enableDarkMode();
-    } else {
+
+    if (savedTheme === 'light') {
+        // Si et seulement si l'utilisateur a explicitement choisi 'light' avant
         enableLightMode();
+    } else {
+        // Dans tous les autres cas (premier lancement ou 'dark'), on met le mode sombre
+        enableDarkMode();
     }
 
     themeToggleBtn.addEventListener('click', () => {
@@ -39,41 +46,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    /* --- AJOUT : Logique pour le panneau d'historique --- */
+    /* --- LOGIQUE HISTORIQUE --- */
+    
+    // Ouvrir/Fermer avec le bouton du haut
     historyToggleBtn.addEventListener('click', () => {
         appWrapper.classList.toggle('history-open');
     });
 
-    /* --- AJOUT : Fonction pour ajouter un élément à l'historique --- */
+    // NOUVEAU : Fermer avec la croix dans la sidebar
+    if (closeHistoryBtn) {
+        closeHistoryBtn.addEventListener('click', () => {
+            appWrapper.classList.remove('history-open');
+        });
+    }
+
+    /* --- FONCTION D'AJOUT HISTORIQUE --- */
     function addHistoryItem(text, messageId) {
         const li = document.createElement('li');
-        // Tronque le texte pour l'aperçu
         li.textContent = text.length > 40 ? text.substring(0, 40) + '...' : text;
-        li.title = text; // Affiche le texte complet au survol
+        li.title = text; 
         
         li.addEventListener('click', () => {
             const targetMessage = document.getElementById(messageId);
             if (targetMessage) {
-                // Fait défiler jusqu'au message
                 targetMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                
-                // Ajoute un surlignage temporaire
                 targetMessage.classList.add('highlight');
                 setTimeout(() => {
                     targetMessage.classList.remove('highlight');
-                }, 2000); // Durée du surlignage
+                }, 2000);
             }
-            // Optionnel : ferme la sidebar sur mobile après avoir cliqué
+            // Sur mobile, on ferme le menu après clic
             if (window.innerWidth <= 768) {
                 appWrapper.classList.remove('history-open');
             }
         });
 
-        // Ajoute en haut de la liste (prepend)
         historyList.prepend(li);
     }
 
-    // --- FONCTIONS DU CHAT ---
+    // --- FONCTIONS CHAT ---
     function isRefusal(message) {
         const lowerCaseMessage = message.toLowerCase();
         const refusalPhrases = [
@@ -86,12 +97,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return refusalPhrases.some(phrase => lowerCaseMessage.includes(phrase));
     }
 
-    /* --- MODIFIÉ : addMessage --- */
     function addMessage(message, sender, sources = null) {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
         
-        /* AJOUT : Crée un ID unique pour chaque message */
         const messageId = 'msg-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
         messageDiv.id = messageId;
         
@@ -111,7 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
         chatBox.appendChild(messageDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
 
-        /* AJOUT : Appelle la fonction d'historique si c'est un message utilisateur */
         if (sender === 'user') {
             addHistoryItem(message, messageId);
         }
@@ -170,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sendMessage();
         });
     } else {
-        console.error("ERREUR CRITIQUE : Le formulaire avec l'ID 'chat-form' est introuvable.");
+        console.error("Formulaire introuvable.");
     }
 
     // --- FONCTIONS UTILITAIRES ---
