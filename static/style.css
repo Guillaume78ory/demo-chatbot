@@ -1,32 +1,43 @@
 /* =========================================
-   1. VARIABLES & CONFIGURATION
+   1. CONFIGURATION & VARIABLES
    ========================================= */
+
+/* Import de la police Inter pour un look moderne */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
 :root {
+    /* Couleurs de base */
     --primary-color: #0070ef;
+    --primary-hover: #0056b3;
     
-    /* Mode Clair */
+    /* Mode Clair (Light) */
     --bg-light: #f4f6f8;
     --surface-light: #ffffff;
     --text-main-light: #1a1d21;
+    --text-secondary-light: #5f6368;
     --border-light: #e0e0e0;
-    --msg-bot-light: #e5e5ea;
-    
-    /* Mode Sombre */
+    --msg-bot-light: #f0f2f5;
+    --msg-user-light: #0070ef;
+    --msg-user-text-light: #ffffff;
+
+    /* Mode Sombre (Dark) */
     --bg-dark: #1a1d21;
-    --surface-dark: #222529; /* Couleur des conteneurs */
+    --surface-dark: #222529;
     --header-dark: #2c3036;
     --text-main-dark: #e3e6e8;
+    --text-secondary-dark: #9ca3af;
     --border-dark: #3b4048;
     --msg-bot-dark: #2c3036;
+    --msg-user-dark: #3b82f6;
+    --msg-user-text-dark: #ffffff;
 }
 
 /* =========================================
-   2. STYLE GÉNÉRAL
+   2. STYLES GÉNÉRAUX & RESET
    ========================================= */
+
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     margin: 0;
     height: 100vh;
     overflow: hidden;
@@ -38,63 +49,77 @@ body.light-mode {
     background-color: var(--bg-light);
     color: var(--text-main-light);
 }
-body.light-mode .chat-container, body.light-mode #history-sidebar { background-color: var(--surface-light); }
-body.light-mode .chat-header, body.light-mode .sidebar-header { border-bottom: 1px solid var(--border-light); }
-body.light-mode #history-sidebar { border-right: 1px solid var(--border-light); }
-body.light-mode .bot-message { background-color: var(--msg-bot-light); color: #333; }
-body.light-mode .user-message { background-color: var(--primary-color); color: white; }
-body.light-mode #user-input { background: white; color: #333; border-color: #ccc; }
-body.light-mode #history-list li { border: 1px solid var(--border-light); background: white; }
-body.light-mode #history-list li:hover { background-color: #f0f0f0; }
-body.light-mode .icon-btn, body.light-mode .theme-toggle-button { color: #333; }
+body.light-mode .chat-container { background-color: var(--surface-light); }
+body.light-mode .chat-header { background-color: var(--surface-light); border-bottom: 1px solid var(--border-light); }
+body.light-mode .header-text h1 { color: var(--text-main-light); }
+body.light-mode .header-text p { color: var(--text-secondary-light); }
+body.light-mode #history-sidebar { background-color: var(--surface-light); border-right: 1px solid var(--border-light); }
+body.light-mode .sidebar-header { border-bottom: 1px solid var(--border-light); }
+body.light-mode .bot-message { background-color: var(--msg-bot-light); color: var(--text-main-light); }
+body.light-mode .user-message { background-color: var(--msg-user-light); color: var(--msg-user-text-light); }
+body.light-mode #user-input { background-color: var(--surface-light); color: var(--text-main-light); border-color: var(--border-light); }
+body.light-mode #history-list li { border: 1px solid var(--border-light); }
+body.light-mode #history-list li:hover { background-color: var(--msg-bot-light); }
+body.light-mode .theme-toggle-button, body.light-mode .icon-btn { color: var(--text-main-light); }
 
 /* --- Thème Sombre (Défaut) --- */
 body.dark-mode {
     background-color: var(--bg-dark);
     color: var(--text-main-dark);
 }
-body.dark-mode .chat-container, body.dark-mode #history-sidebar { background-color: var(--surface-dark); }
-body.dark-mode .chat-header, body.dark-mode .sidebar-header { background-color: var(--header-dark); border-bottom: 1px solid var(--border-dark); }
-body.dark-mode #history-sidebar { border-right: 1px solid var(--border-dark); }
+body.dark-mode .chat-container { background-color: var(--surface-dark); }
+body.dark-mode .chat-header { background-color: var(--header-dark); border-bottom: 1px solid var(--border-dark); }
+body.dark-mode .header-text h1 { color: var(--text-main-dark); }
+body.dark-mode .header-text p { color: var(--text-secondary-dark); }
+body.dark-mode #history-sidebar { background-color: #15171a; border-right: 1px solid var(--border-dark); }
+body.dark-mode .sidebar-header { border-bottom: 1px solid var(--border-dark); }
 body.dark-mode .bot-message { background-color: var(--msg-bot-dark); color: var(--text-main-dark); }
-body.dark-mode .user-message { background-color: #3b82f6; color: white; }
-body.dark-mode #user-input { background-color: var(--header-dark); color: white; border-color: var(--border-dark); }
+body.dark-mode .user-message { background-color: var(--msg-user-dark); color: var(--msg-user-text-dark); }
+body.dark-mode #user-input { background-color: var(--header-dark); color: var(--text-main-dark); border-color: var(--border-dark); }
 body.dark-mode #history-list li { background-color: var(--header-dark); border: 1px solid var(--border-dark); color: var(--text-main-dark); }
 body.dark-mode #history-list li:hover { background-color: var(--border-dark); }
-body.dark-mode .icon-btn, body.dark-mode .theme-toggle-button { color: white; }
-body.dark-mode .chat-footer { color: #9ca3af; }
+body.dark-mode .theme-toggle-button, body.dark-mode .icon-btn { color: var(--text-main-dark); }
+body.dark-mode .chat-footer { color: var(--text-secondary-dark); }
+
 
 /* =========================================
-   3. STRUCTURE
+   3. LAYOUT PRINCIPAL
    ========================================= */
-.app-wrapper { display: flex; width: 100vw; height: 100vh; }
+
+.app-wrapper {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
 
 .chat-container {
     flex: 1;
     display: flex;
     flex-direction: column;
     height: 100vh;
-    min-width: 0;
+    position: relative;
+    min-width: 0; /* Empêche le flex item de déborder */
 }
 
 /* =========================================
-   4. SIDEBAR HISTORIQUE (CORRIGÉE)
+   4. SIDEBAR (HISTORIQUE)
    ========================================= */
+
 #history-sidebar {
     width: 0;
     overflow: hidden;
-    transition: width 0.3s ease;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Animation fluide */
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
     height: 100vh;
+    white-space: nowrap; /* Empêche le texte de se casser pendant l'animation */
 }
 
 .app-wrapper.history-open #history-sidebar {
-    width: 300px; /* Largeur quand ouvert */
+    width: 320px;
 }
 
-/* En-tête de la sidebar pour aligner Titre et Croix */
 .sidebar-header {
     display: flex;
     justify-content: space-between;
@@ -103,139 +128,263 @@ body.dark-mode .chat-footer { color: #9ca3af; }
     flex-shrink: 0;
 }
 
-.sidebar-header h2 { margin: 0; font-size: 1.2rem; }
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
 
-/* Le bouton de fermeture */
-#close-history {
+.icon-btn {
     background: none;
     border: none;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     cursor: pointer;
-    padding: 5px;
-    border-radius: 5px;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-#close-history:hover { background-color: rgba(128,128,128,0.2); }
+
+.icon-btn:hover {
+    background-color: rgba(128, 128, 128, 0.15);
+}
 
 #history-list {
     padding: 15px;
-    margin: 0;
-    list-style: none;
     overflow-y: auto;
     flex-grow: 1;
+    list-style: none;
+    margin: 0;
 }
 
 #history-list li {
-    padding: 12px;
+    padding: 12px 15px;
     margin-bottom: 8px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 0.9rem;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: transform 0.1s, background-color 0.2s;
 }
 
+#history-list li:active {
+    transform: scale(0.98);
+}
+
+
 /* =========================================
-   5. HEADER & CHAT
+   5. HEADER DU CHAT
    ========================================= */
+
 .chat-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
+    padding: 15px 25px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    z-index: 10;
     flex-shrink: 0;
 }
 
-.header-left { display: flex; align-items: center; gap: 15px; }
-.logo { width: 45px; height: 45px; border-radius: 50%; object-fit: contain; background: white; padding: 2px; }
-.header-text h1 { font-size: 1.3rem; margin: 0; font-weight: 600; }
-.header-text p { font-size: 0.85rem; margin: 2px 0 0; opacity: 0.8; }
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    object-fit: contain;
+    background: white;
+    padding: 2px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.header-text h1 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.header-text p {
+    font-size: 0.8rem;
+    margin: 2px 0 0;
+    opacity: 0.8;
+}
 
 .theme-toggle-button {
     background: none;
     border: none;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     cursor: pointer;
     padding: 8px;
     border-radius: 50%;
-    margin-left: 10px;
+    margin-left: 8px;
+    transition: background-color 0.2s;
 }
-.theme-toggle-button:hover { background-color: rgba(128,128,128,0.1); }
 
+.theme-toggle-button:hover {
+    background-color: rgba(128, 128, 128, 0.15);
+}
+
+/* Gestion des icônes Lune/Soleil */
 .theme-toggle-button .icon-moon { display: none; }
 body.dark-mode .theme-toggle-button .icon-sun { display: none; }
-body.dark-mode .theme-toggle-button .icon-moon { display: inline; }
+body.dark-mode .theme-toggle-button .icon-moon { display: inline-block; }
+
+
+/* =========================================
+   6. ZONE DE CHAT (MESSAGES)
+   ========================================= */
 
 .chat-box {
     flex-grow: 1;
-    padding: 20px;
+    padding: 20px 50px; /* Marges latérales plus larges pour la lisibilité */
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
     overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+/* Sur mobile, on réduit les marges */
+@media (max-width: 768px) {
+    .chat-box { padding: 20px 15px; }
 }
 
 .message {
     max-width: 80%;
-    padding: 12px 18px;
+    padding: 16px 20px;
     border-radius: 18px;
-    line-height: 1.5;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    position: relative;
+    word-wrap: break-word;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
-.bot-message { align-self: flex-start; border-bottom-left-radius: 4px; }
-.user-message { align-self: flex-end; border-bottom-right-radius: 4px; }
+.bot-message {
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+}
 
-.bot-message ul { margin-top: 8px; padding-left: 20px; }
-.bot-message strong { color: #60a5fa; }
-body.light-mode .bot-message strong { color: var(--primary-color); }
+.user-message {
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+    font-weight: 500;
+}
+
+/* Liens et listes dans les messages */
+.bot-message strong { color: var(--primary-color); }
+body.dark-mode .bot-message strong { color: #60a5fa; }
+
+.bot-message ul {
+    margin: 10px 0 0 0;
+    padding-left: 20px;
+}
+.bot-message li { margin-bottom: 5px; }
+
+
+/* =========================================
+   7. ZONE DE SAISIE (INPUT)
+   ========================================= */
 
 .input-area {
-    padding: 20px;
+    padding: 20px 30px;
     display: flex;
-    gap: 10px;
-    border-top: 1px solid transparent; /* Géré par les thèmes */
+    gap: 12px;
+    align-items: center;
+    flex-shrink: 0;
 }
-body.light-mode .input-area { border-color: var(--border-light); }
-body.dark-mode .input-area { border-color: var(--border-dark); }
 
 #user-input {
     flex-grow: 1;
-    padding: 12px 20px;
+    padding: 14px 20px;
     border-radius: 25px;
     border-width: 1px;
     border-style: solid;
     outline: none;
     font-size: 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
-#user-input:focus { border-color: var(--primary-color); }
+
+#user-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 112, 239, 0.15);
+}
 
 #send-btn {
-    padding: 0 25px;
-    border-radius: 25px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
     background-color: var(--primary-color);
     color: white;
     border: none;
     cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: transform 0.1s, background-color 0.2s;
+    flex-shrink: 0;
 }
-#send-btn:hover { opacity: 0.9; }
+
+#send-btn:hover {
+    background-color: var(--primary-hover);
+    transform: scale(1.05);
+}
+
+#send-btn:active {
+    transform: scale(0.95);
+}
+
+/* =========================================
+   8. PIED DE PAGE & ÉLÉMENTS DIVERS
+   ========================================= */
 
 .chat-footer {
     padding: 10px;
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     opacity: 0.7;
+    flex-shrink: 0;
 }
+
 .chat-footer p { margin: 2px 0; }
 
-/* Spinner */
-.loading-message-container { display: flex; align-items: center; gap: 10px; }
+/* Scrollbar moderne (Webkit) */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+body.dark-mode ::-webkit-scrollbar-thumb {
+    background: #4b5563;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Animation de chargement (Spinner) */
+.loading-message-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 .inline-spinner {
-    width: 16px; height: 16px;
+    width: 18px;
+    height: 18px;
     border: 2px solid rgba(128,128,128,0.3);
     border-top-color: var(--primary-color);
     border-radius: 50%;
@@ -244,4 +393,7 @@ body.dark-mode .input-area { border-color: var(--border-dark); }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
 /* Surlignage */
-.message.highlight { box-shadow: 0 0 0 3px var(--primary-color); transition: box-shadow 0.3s; }
+.message.highlight {
+    box-shadow: 0 0 0 2px var(--primary-color);
+    transition: box-shadow 0.3s;
+}
