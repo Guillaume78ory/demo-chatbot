@@ -4,7 +4,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
 :root {
-    /* COULEUR DEMANDÉE */
     --primary-color: #0074bd; 
     --primary-hover: #005fa3;
     
@@ -48,7 +47,6 @@ body.light-mode {
 }
 body.light-mode .chat-container { background-color: var(--surface-light); }
 
-/* Header & Footer bleu en mode jour */
 body.light-mode .chat-header { 
     background-color: var(--header-bg-light); 
     color: var(--header-text-light);
@@ -160,7 +158,7 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
 }
 
 /* =========================================
-   5. HEADER & LOGO
+   5. HEADER & LOGO (CORRECTION MOBILE)
    ========================================= */
 .chat-header {
     display: flex;
@@ -168,11 +166,20 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
     align-items: center;
     padding: 15px 20px;
     flex-shrink: 0;
+    /* Empêche le header de dépasser la largeur de l'écran */
+    width: 100%; 
+    box-sizing: border-box;
 }
 
-.header-left { display: flex; align-items: center; gap: 15px; }
+.header-left { 
+    display: flex; 
+    align-items: center; 
+    gap: 15px;
+    /* CORRECTIF MOBILE : Force la partie gauche à prendre l'espace disponible */
+    flex-grow: 1; 
+    min-width: 0; /* Permet au texte de se réduire si nécessaire */
+}
 
-/* Logo sans bordure ni fond */
 .logo {
     width: 50px;
     height: 50px;
@@ -182,10 +189,40 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
     border: none;
     border-radius: 0;
     box-shadow: none;
+    flex-shrink: 0; /* Empêche le logo d'être écrasé */
 }
 
-.header-text h1 { font-size: 1.3rem; margin: 0; font-weight: 600; }
-.header-text p { font-size: 0.85rem; margin: 2px 0 0; opacity: 0.9; }
+.header-text {
+    /* Permet au texte d'être coupé proprement s'il manque de place */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+.header-text h1 { 
+    font-size: 1.3rem; 
+    margin: 0; 
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.header-text p { 
+    font-size: 0.85rem; 
+    margin: 2px 0 0; 
+    opacity: 0.9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.header-controls {
+    flex-shrink: 0; /* Empêche les boutons de rétrécir */
+    display: flex;
+    align-items: center;
+}
 
 .theme-toggle-button {
     background: none;
@@ -194,17 +231,32 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
     cursor: pointer;
     padding: 8px;
     border-radius: 50%;
-    margin-left: 10px;
+    margin-left: 5px; /* Réduit la marge sur mobile */
 }
 .theme-toggle-button:hover { background-color: rgba(255,255,255,0.2); }
 
-/* Logique Icônes : Lune affichée par défaut (pour aller vers nuit)
-   Soleil affiché si nuit active (pour aller vers jour) */
 .theme-toggle-button .icon-sun { display: none; }
 .theme-toggle-button .icon-moon { display: inline-block; }
 
 body.dark-mode .theme-toggle-button .icon-moon { display: none; }
 body.dark-mode .theme-toggle-button .icon-sun { display: inline-block; }
+
+/* --- MEDIA QUERY POUR MOBILE --- */
+@media (max-width: 600px) {
+    .header-text p {
+        display: none; /* On cache la description sur petit écran */
+    }
+    .header-text h1 {
+        font-size: 1rem; /* Titre plus petit */
+    }
+    .logo {
+        width: 35px;
+        height: 35px;
+    }
+    .chat-header {
+        padding: 10px 15px;
+    }
+}
 
 /* =========================================
    6. MESSAGES
@@ -299,9 +351,8 @@ body.dark-mode .input-area { border-color: var(--border-dark); }
 }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
-/* --- CORRECTIF ANIMATION DES POINTS --- */
+/* Animation points */
 .loading-dot {
-    /* LE CORRECTIF EST ICI : inline-block permet au transform de fonctionner */
     display: inline-block;
     animation: dot-bounce 1.4s infinite ease-in-out both;
     margin-left: 1px;
@@ -312,7 +363,7 @@ body.dark-mode .input-area { border-color: var(--border-dark); }
 
 @keyframes dot-bounce {
   0%, 80%, 100% { transform: translateY(0); }
-  40% { transform: translateY(-6px); } /* Petit saut de 6px */
+  40% { transform: translateY(-6px); }
 }
 
 .message.highlight { box-shadow: 0 0 0 3px var(--primary-color); transition: box-shadow 0.3s; }
