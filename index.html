@@ -6,7 +6,7 @@
     <title>Chatbot Cost Control</title>
     <link rel="stylesheet" href="static/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="static/images/logo.png">
+    <link rel="icon" type="image/png" href="/static/images/logo.png?v=3">
 </head>
 <body class="dark-mode">
     
@@ -17,7 +17,6 @@
                 <h2>Historique</h2>
                 <button id="close-history" class="icon-btn" title="Fermer l'historique">✕</button>
             </div>
-            
             <ul id="history-list">
                 </ul>
         </aside>
@@ -27,14 +26,13 @@
                 <div class="header-left">
                     <img src="static/images/logo.png" alt="Logo" class="logo">
                     <div class="header-text">
-                        <h1>Chatbot - Département Cost Control</h1>
-                        <p>Assistant intelligent procédures & finances</p>
+                        <h1>Assistant Cost Control</h1>
+                        <p>Expert en Cost Control</p>
                     </div>
                 </div>
                 
                 <div class="header-controls">
-                    <button id="history-toggle" class="theme-toggle-button" title="Ouvrir l'historique">🕒</button>
-                    
+                    <button id="history-toggle" class="theme-toggle-button" title="Historique">🕒</button>
                     <button id="theme-toggle" class="theme-toggle-button" title="Changer de thème">
                         <span class="icon-sun">☀️</span>
                         <span class="icon-moon">🌙</span>
@@ -50,7 +48,7 @@
 
             <form id="chat-form" class="input-area">
                 <input type="text" id="user-input" placeholder="Posez votre question ici..." autocomplete="off" autofocus>
-                <button type="submit" id="send-btn">Envoyer</button>
+                <button type="submit" id="send-btn" title="Envoyer">➤</button>
             </form>
             
             <footer class="chat-footer">
