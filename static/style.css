@@ -12,13 +12,8 @@
     --surface-light: #ffffff;
     --text-main-light: #1a1d21;
     --border-light: #e0e0e0;
-    --msg-bot-light: #e5e5ea;
+    --msg-bot-light: #f0f2f5;
     
-    /* Couleurs Header/Footer Mode Clair */
-    --header-bg-light: #0074bd;
-    --footer-bg-light: #0074bd;
-    --header-text-light: #ffffff;
-
     /* Mode Sombre */
     --bg-dark: #1a1d21;
     --surface-dark: #222529;
@@ -47,17 +42,18 @@ body.light-mode {
 }
 body.light-mode .chat-container { background-color: var(--surface-light); }
 
+/* Header & Footer bleu en mode jour */
 body.light-mode .chat-header { 
     background-color: var(--header-bg-light); 
-    color: var(--header-text-light);
+    color: #ffffff;
     border-bottom: none;
 }
-body.light-mode .header-text h1, body.light-mode .header-text p { color: var(--header-text-light); }
-body.light-mode .theme-toggle-button, body.light-mode #history-toggle { color: var(--header-text-light); }
+body.light-mode .header-text h1, body.light-mode .header-text p { color: #ffffff; }
+body.light-mode .theme-toggle-button, body.light-mode #history-toggle { color: #ffffff; }
 
 body.light-mode .chat-footer { 
-    background-color: var(--footer-bg-light); 
-    color: var(--header-text-light); 
+    background-color: var(--header-bg-light); 
+    color: #ffffff; 
 }
 
 body.light-mode #history-sidebar { background-color: var(--surface-light); border-right: 1px solid var(--border-light); }
@@ -114,13 +110,14 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
     white-space: nowrap;
 }
 
-.app-wrapper.history-open #history-sidebar { width: 300px; }
+.app-wrapper.history-open #history-sidebar { width: 320px; } /* Un peu plus large */
 
 .sidebar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
+    /* PADDING PRO : Plus d'espace en haut */
+    padding: 25px 20px; 
     flex-shrink: 0;
 }
 .sidebar-header h2 { margin: 0; font-size: 1.2rem; }
@@ -139,7 +136,7 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
 #close-history:hover { opacity: 0.7; }
 
 #history-list {
-    padding: 15px;
+    padding: 20px; /* Plus d'espace autour de la liste */
     margin: 0;
     list-style: none;
     overflow-y: auto;
@@ -147,9 +144,9 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
 }
 
 #history-list li {
-    padding: 12px;
-    margin-bottom: 8px;
-    border-radius: 8px;
+    padding: 14px 18px; /* Items plus "gros" et cliquables */
+    margin-bottom: 10px; /* Plus d'espace entre les items */
+    border-radius: 10px;
     cursor: pointer;
     font-size: 0.9rem;
     white-space: nowrap;
@@ -158,15 +155,15 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
 }
 
 /* =========================================
-   5. HEADER & LOGO (CORRECTION MOBILE)
+   5. HEADER & LOGO
    ========================================= */
 .chat-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
+    /* PADDING PRO : Header plus haut */
+    padding: 20px 30px; 
     flex-shrink: 0;
-    /* Empêche le header de dépasser la largeur de l'écran */
     width: 100%; 
     box-sizing: border-box;
 }
@@ -174,26 +171,24 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
 .header-left { 
     display: flex; 
     align-items: center; 
-    gap: 15px;
-    /* CORRECTIF MOBILE : Force la partie gauche à prendre l'espace disponible */
+    gap: 20px; /* Espace Logo/Texte */
     flex-grow: 1; 
-    min-width: 0; /* Permet au texte de se réduire si nécessaire */
+    min-width: 0; 
 }
 
 .logo {
-    width: 50px;
-    height: 50px;
+    width: 52px;
+    height: 52px;
     object-fit: contain;
     background: transparent;
     padding: 0;
     border: none;
     border-radius: 0;
     box-shadow: none;
-    flex-shrink: 0; /* Empêche le logo d'être écrasé */
+    flex-shrink: 0; 
 }
 
 .header-text {
-    /* Permet au texte d'être coupé proprement s'il manque de place */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -201,17 +196,17 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
 }
 
 .header-text h1 { 
-    font-size: 1.3rem; 
+    font-size: 1.35rem; 
     margin: 0; 
-    font-weight: 600;
+    font-weight: 700; /* Plus gras */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .header-text p { 
-    font-size: 0.85rem; 
-    margin: 2px 0 0; 
+    font-size: 0.9rem; 
+    margin: 4px 0 0; 
     opacity: 0.9;
     white-space: nowrap;
     overflow: hidden;
@@ -219,7 +214,7 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
 }
 
 .header-controls {
-    flex-shrink: 0; /* Empêche les boutons de rétrécir */
+    flex-shrink: 0; 
     display: flex;
     align-items: center;
 }
@@ -227,11 +222,11 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
 .theme-toggle-button {
     background: none;
     border: none;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     cursor: pointer;
-    padding: 8px;
+    padding: 10px; /* Zone de clic plus large */
     border-radius: 50%;
-    margin-left: 5px; /* Réduit la marge sur mobile */
+    margin-left: 5px; 
 }
 .theme-toggle-button:hover { background-color: rgba(255,255,255,0.2); }
 
@@ -241,98 +236,106 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
 body.dark-mode .theme-toggle-button .icon-moon { display: none; }
 body.dark-mode .theme-toggle-button .icon-sun { display: inline-block; }
 
-/* --- MEDIA QUERY POUR MOBILE --- */
 @media (max-width: 600px) {
-    .header-text p {
-        display: none; /* On cache la description sur petit écran */
-    }
-    .header-text h1 {
-        font-size: 1rem; /* Titre plus petit */
-    }
-    .logo {
-        width: 35px;
-        height: 35px;
-    }
-    .chat-header {
-        padding: 10px 15px;
-    }
+    .header-text p { display: none; }
+    .header-text h1 { font-size: 1.1rem; }
+    .logo { width: 40px; height: 40px; }
+    .chat-header { padding: 15px; }
 }
 
 /* =========================================
-   6. MESSAGES
+   6. MESSAGES (Padding amélioré)
    ========================================= */
 .chat-box {
     flex-grow: 1;
-    padding: 20px;
+    /* PADDING PRO : Beaucoup d'espace sur les côtés pour centrer le regard */
+    padding: 30px 80px; 
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 24px; /* Plus d'espace entre les messages */
     overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+/* Sur petit écran, on réduit les marges */
+@media (max-width: 768px) {
+    .chat-box { padding: 20px 15px; }
+    .message { max-width: 85%; }
 }
 
 .message {
-    max-width: 80%;
-    padding: 12px 18px;
-    border-radius: 18px;
-    line-height: 1.5;
+    max-width: 70%; /* Lignes moins longues, plus faciles à lire */
+    padding: 18px 24px; /* Bulles plus aérées */
+    border-radius: 20px;
+    line-height: 1.65; /* Interligne confortable */
+    font-size: 1rem;
 }
 
 .bot-message { align-self: flex-start; border-bottom-left-radius: 4px; }
 .user-message { align-self: flex-end; border-bottom-right-radius: 4px; }
 
-.bot-message ul { margin-top: 8px; padding-left: 20px; }
+.bot-message ul { margin-top: 10px; padding-left: 20px; }
 .bot-message strong { color: #60a5fa; }
 body.light-mode .bot-message strong { color: var(--primary-color); }
 
 /* =========================================
-   7. INPUT & BOUTON
+   7. INPUT & BOUTON (Style "Capsule")
    ========================================= */
 .input-area {
-    padding: 20px;
+    /* PADDING PRO : Zone de saisie flottante */
+    padding: 30px 80px;
     display: flex;
-    gap: 10px;
+    gap: 15px;
     border-top: 1px solid transparent;
 }
+
+@media (max-width: 768px) {
+    .input-area { padding: 20px 15px; }
+}
+
 body.light-mode .input-area { border-color: var(--border-light); }
 body.dark-mode .input-area { border-color: var(--border-dark); }
 
 #user-input {
     flex-grow: 1;
-    padding: 14px 20px;
-    border-radius: 25px;
+    padding: 16px 25px; /* Champ plus haut */
+    border-radius: 30px;
     border-width: 1px;
     border-style: solid;
     outline: none;
-    font-size: 1rem;
+    font-size: 1.05rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03); /* Ombre subtile */
 }
 #user-input:focus { border-color: var(--primary-color); }
 
 #send-btn {
-    width: 50px;
-    height: 50px;
+    width: 56px; /* Bouton plus gros */
+    height: 56px;
     padding: 0;
     border-radius: 50%;
     background-color: var(--primary-color);
     color: white;
     border: none;
     cursor: pointer;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 112, 239, 0.3); /* Ombre colorée */
 }
 #send-btn:hover { opacity: 0.9; transform: scale(1.05); }
+#send-btn:active { transform: scale(0.95); }
 
 /* =========================================
    8. DIVERS
    ========================================= */
 .chat-footer {
-    padding: 10px;
+    padding: 15px;
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     opacity: 0.8;
 }
-.chat-footer p { margin: 2px 0; }
+.chat-footer p { margin: 4px 0; }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 8px; }
@@ -341,9 +344,9 @@ body.dark-mode .input-area { border-color: var(--border-dark); }
 ::-webkit-scrollbar-thumb:hover { background: #555; }
 
 /* Spinner */
-.loading-message-container { display: flex; align-items: center; gap: 10px; }
+.loading-message-container { display: flex; align-items: center; gap: 12px; }
 .inline-spinner {
-    width: 16px; height: 16px;
+    width: 18px; height: 18px;
     border: 2px solid rgba(128,128,128,0.3);
     border-top-color: var(--primary-color);
     border-radius: 50%;
@@ -351,11 +354,11 @@ body.dark-mode .input-area { border-color: var(--border-dark); }
 }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
-/* Animation points */
+/* Animation points (Correctif saut) */
 .loading-dot {
     display: inline-block;
     animation: dot-bounce 1.4s infinite ease-in-out both;
-    margin-left: 1px;
+    margin-left: 2px;
 }
 
 .loading-dot:nth-child(1) { animation-delay: -0.32s; }
