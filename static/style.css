@@ -4,6 +4,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
 :root {
+    /* Couleur Bleue "Cost Control" */
     --primary-color: #0074bd; 
     --primary-hover: #005fa3;
     
@@ -14,14 +15,18 @@
     --border-light: #e0e0e0;
     --msg-bot-light: #f0f2f5;
     
+    /* Couleurs Header/Footer Mode Clair (Bleu) */
+    --header-bg-light: #0074bd;
+    --header-text-light: #ffffff;
+
     /* Mode Sombre */
-    --bg-dark: #1a1d21;
-    --surface-dark: #222529;
-    --header-dark: #2c3036;
-    --text-main-dark: #e3e6e8;
-    --border-dark: #3b4048;
-    --msg-bot-dark: #2c3036;
-    --msg-user-dark: #3b82f6;
+    --bg-dark: #131314; /* Fond très sombre style Gemini */
+    --surface-dark: #1e1f20;
+    --header-dark: #1e1f20;
+    --text-main-dark: #e3e3e3;
+    --border-dark: #444746;
+    --msg-bot-dark: #1e1f20; /* Message bot discret */
+    --msg-user-dark: #004a77; /* Bleu sombre pour l'utilisateur */
 }
 
 /* =========================================
@@ -42,24 +47,30 @@ body.light-mode {
 }
 body.light-mode .chat-container { background-color: var(--surface-light); }
 
-/* Header & Footer bleu en mode jour */
+/* Header & Footer : BLEU (#0074bd) en mode clair */
 body.light-mode .chat-header { 
     background-color: var(--header-bg-light); 
-    color: #ffffff;
+    color: var(--header-text-light);
     border-bottom: none;
+    box-shadow: 0 2px 10px rgba(0, 116, 189, 0.2);
 }
-body.light-mode .header-text h1, body.light-mode .header-text p { color: #ffffff; }
-body.light-mode .theme-toggle-button, body.light-mode #history-toggle { color: #ffffff; }
+/* Force le texte en blanc sur le fond bleu */
+body.light-mode .header-text h1, 
+body.light-mode .header-text p,
+body.light-mode .theme-toggle-button, 
+body.light-mode #history-toggle { 
+    color: #ffffff; 
+}
 
 body.light-mode .chat-footer { 
     background-color: var(--header-bg-light); 
-    color: #ffffff; 
+    color: rgba(255, 255, 255, 0.8); /* Blanc légèrement transparent */
 }
 
 body.light-mode #history-sidebar { background-color: var(--surface-light); border-right: 1px solid var(--border-light); }
 body.light-mode .sidebar-header { border-bottom: 1px solid var(--border-light); }
 body.light-mode .bot-message { background-color: var(--msg-bot-light); color: #333; }
-body.light-mode .user-message { background-color: var(--primary-color); color: white; }
+body.light-mode .user-message { background-color: #e8f0fe; color: #004a77; } /* Style Gemini Light : Fond bleu très pâle, texte bleu foncé */
 body.light-mode #user-input { background: white; color: #333; border-color: #ccc; }
 body.light-mode #history-list li { border: 1px solid var(--border-light); background: white; }
 body.light-mode #history-list li:hover { background-color: #f0f0f0; }
@@ -70,15 +81,15 @@ body.dark-mode {
     background-color: var(--bg-dark);
     color: var(--text-main-dark);
 }
-body.dark-mode .chat-container { background-color: var(--surface-dark); }
+body.dark-mode .chat-container { background-color: var(--bg-dark); }
 body.dark-mode .chat-header { background-color: var(--header-dark); border-bottom: 1px solid var(--border-dark); }
 body.dark-mode .sidebar-header { border-bottom: 1px solid var(--border-dark); }
-body.dark-mode #history-sidebar { background-color: #15171a; border-right: 1px solid var(--border-dark); }
-body.dark-mode .bot-message { background-color: var(--msg-bot-dark); color: var(--text-main-dark); }
-body.dark-mode .user-message { background-color: #3b82f6; color: white; }
-body.dark-mode #user-input { background-color: var(--header-dark); color: white; border-color: var(--border-dark); }
-body.dark-mode #history-list li { background-color: var(--header-dark); border: 1px solid var(--border-dark); color: var(--text-main-dark); }
-body.dark-mode #history-list li:hover { background-color: var(--border-dark); }
+body.dark-mode #history-sidebar { background-color: var(--surface-dark); border-right: 1px solid var(--border-dark); }
+body.dark-mode .bot-message { background-color: var(--surface-dark); color: var(--text-main-dark); }
+body.dark-mode .user-message { background-color: var(--msg-user-dark); color: white; }
+body.dark-mode #user-input { background-color: var(--surface-dark); color: white; border-color: var(--border-dark); }
+body.dark-mode #history-list li { background-color: var(--surface-dark); border: 1px solid var(--border-dark); color: var(--text-main-dark); }
+body.dark-mode #history-list li:hover { background-color: #2c2e30; }
 body.dark-mode .icon-btn, body.dark-mode .theme-toggle-button { color: white; }
 body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border-dark); }
 
@@ -94,6 +105,7 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
     flex-direction: column;
     height: 100vh;
     min-width: 0;
+    position: relative;
 }
 
 /* =========================================
@@ -108,19 +120,19 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
     flex-shrink: 0;
     height: 100vh;
     white-space: nowrap;
+    z-index: 20;
 }
 
-.app-wrapper.history-open #history-sidebar { width: 320px; } /* Un peu plus large */
+.app-wrapper.history-open #history-sidebar { width: 300px; }
 
 .sidebar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* PADDING PRO : Plus d'espace en haut */
-    padding: 25px 20px; 
+    padding: 20px;
     flex-shrink: 0;
 }
-.sidebar-header h2 { margin: 0; font-size: 1.2rem; }
+.sidebar-header h2 { margin: 0; font-size: 1.2rem; font-weight: 600; }
 
 #close-history {
     background: none;
@@ -136,7 +148,7 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
 #close-history:hover { opacity: 0.7; }
 
 #history-list {
-    padding: 20px; /* Plus d'espace autour de la liste */
+    padding: 15px;
     margin: 0;
     list-style: none;
     overflow-y: auto;
@@ -144,9 +156,9 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
 }
 
 #history-list li {
-    padding: 14px 18px; /* Items plus "gros" et cliquables */
-    margin-bottom: 10px; /* Plus d'espace entre les items */
-    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 0.9rem;
     white-space: nowrap;
@@ -161,8 +173,7 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* PADDING PRO : Header plus haut */
-    padding: 20px 30px; 
+    padding: 15px 30px;
     flex-shrink: 0;
     width: 100%; 
     box-sizing: border-box;
@@ -171,14 +182,15 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
 .header-left { 
     display: flex; 
     align-items: center; 
-    gap: 20px; /* Espace Logo/Texte */
+    gap: 20px;
     flex-grow: 1; 
     min-width: 0; 
 }
 
+/* Logo sans bordure */
 .logo {
-    width: 52px;
-    height: 52px;
+    width: 45px;
+    height: 45px;
     object-fit: contain;
     background: transparent;
     padding: 0;
@@ -196,16 +208,16 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
 }
 
 .header-text h1 { 
-    font-size: 1.35rem; 
+    font-size: 1.2rem; 
     margin: 0; 
-    font-weight: 700; /* Plus gras */
+    font-weight: 600; 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .header-text p { 
-    font-size: 0.9rem; 
+    font-size: 0.8rem; 
     margin: 4px 0 0; 
     opacity: 0.9;
     white-space: nowrap;
@@ -222,13 +234,13 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
 .theme-toggle-button {
     background: none;
     border: none;
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     cursor: pointer;
-    padding: 10px; /* Zone de clic plus large */
+    padding: 10px; 
     border-radius: 50%;
     margin-left: 5px; 
 }
-.theme-toggle-button:hover { background-color: rgba(255,255,255,0.2); }
+.theme-toggle-button:hover { background-color: rgba(255,255,255,0.1); }
 
 .theme-toggle-button .icon-sun { display: none; }
 .theme-toggle-button .icon-moon { display: inline-block; }
@@ -238,104 +250,115 @@ body.dark-mode .theme-toggle-button .icon-sun { display: inline-block; }
 
 @media (max-width: 600px) {
     .header-text p { display: none; }
-    .header-text h1 { font-size: 1.1rem; }
-    .logo { width: 40px; height: 40px; }
-    .chat-header { padding: 15px; }
+    .header-text h1 { font-size: 1rem; }
+    .logo { width: 35px; height: 35px; }
+    .chat-header { padding: 10px 15px; }
 }
 
 /* =========================================
-   6. MESSAGES (Padding amélioré)
+   6. MESSAGES (STYLE GEMINI)
    ========================================= */
 .chat-box {
     flex-grow: 1;
-    /* PADDING PRO : Beaucoup d'espace sur les côtés pour centrer le regard */
-    padding: 30px 80px; 
+    width: 100%;
+    /* C'est ICI le secret du style Gemini : on contraint la largeur max */
+    max-width: 900px; 
+    margin: 0 auto; /* Centre le bloc dans la page */
+    padding: 40px 20px; /* Beaucoup d'espace en haut/bas */
     display: flex;
     flex-direction: column;
-    gap: 24px; /* Plus d'espace entre les messages */
+    gap: 30px; /* Plus d'espace entre les messages */
     overflow-y: auto;
     scroll-behavior: smooth;
 }
 
-/* Sur petit écran, on réduit les marges */
-@media (max-width: 768px) {
-    .chat-box { padding: 20px 15px; }
-    .message { max-width: 85%; }
-}
-
 .message {
-    max-width: 70%; /* Lignes moins longues, plus faciles à lire */
-    padding: 18px 24px; /* Bulles plus aérées */
-    border-radius: 20px;
-    line-height: 1.65; /* Interligne confortable */
+    max-width: 85%; /* Les messages ne prennent pas toute la largeur */
+    padding: 15px 25px;
+    border-radius: 18px;
+    line-height: 1.7; /* Interligne plus aéré */
     font-size: 1rem;
 }
 
-.bot-message { align-self: flex-start; border-bottom-left-radius: 4px; }
-.user-message { align-self: flex-end; border-bottom-right-radius: 4px; }
+.bot-message { 
+    align-self: flex-start; 
+    border-bottom-left-radius: 4px; 
+    /* Petite ombre pour le détacher du fond */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.user-message { 
+    align-self: flex-end; 
+    border-bottom-right-radius: 4px; 
+}
 
 .bot-message ul { margin-top: 10px; padding-left: 20px; }
 .bot-message strong { color: #60a5fa; }
 body.light-mode .bot-message strong { color: var(--primary-color); }
 
+
 /* =========================================
-   7. INPUT & BOUTON (Style "Capsule")
+   7. INPUT & BOUTON (FLOTTANT CENTRÉ)
    ========================================= */
+/* Le conteneur du formulaire pour centrer */
+form#chat-form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 20px;
+    background-color: inherit; /* Fond suit le thème */
+}
+
 .input-area {
-    /* PADDING PRO : Zone de saisie flottante */
-    padding: 30px 80px;
+    width: 100%;
+    max-width: 850px; /* Même largeur que Gemini */
+    padding: 10px 20px;
     display: flex;
     gap: 15px;
-    border-top: 1px solid transparent;
+    align-items: center;
+    /* On ne met plus de bordure top ici pour l'effet flottant */
 }
-
-@media (max-width: 768px) {
-    .input-area { padding: 20px 15px; }
-}
-
-body.light-mode .input-area { border-color: var(--border-light); }
-body.dark-mode .input-area { border-color: var(--border-dark); }
 
 #user-input {
     flex-grow: 1;
-    padding: 16px 25px; /* Champ plus haut */
+    padding: 18px 25px; /* Champ large et confortable */
     border-radius: 30px;
     border-width: 1px;
     border-style: solid;
     outline: none;
     font-size: 1.05rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.03); /* Ombre subtile */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
-#user-input:focus { border-color: var(--primary-color); }
+#user-input:focus { border-color: var(--primary-color); box-shadow: 0 4px 15px rgba(0, 116, 189, 0.15); }
 
 #send-btn {
-    width: 56px; /* Bouton plus gros */
-    height: 56px;
+    width: 55px;
+    height: 55px;
     padding: 0;
     border-radius: 50%;
     background-color: var(--primary-color);
     color: white;
     border: none;
     cursor: pointer;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 112, 239, 0.3); /* Ombre colorée */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 #send-btn:hover { opacity: 0.9; transform: scale(1.05); }
-#send-btn:active { transform: scale(0.95); }
 
 /* =========================================
-   8. DIVERS
+   8. FOOTER
    ========================================= */
 .chat-footer {
-    padding: 15px;
+    padding: 12px;
     text-align: center;
-    font-size: 0.85rem;
-    opacity: 0.8;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    width: 100%;
 }
-.chat-footer p { margin: 4px 0; }
+.chat-footer p { margin: 2px 0; opacity: 0.8; }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 8px; }
@@ -346,7 +369,7 @@ body.dark-mode .input-area { border-color: var(--border-dark); }
 /* Spinner */
 .loading-message-container { display: flex; align-items: center; gap: 12px; }
 .inline-spinner {
-    width: 18px; height: 18px;
+    width: 20px; height: 20px;
     border: 2px solid rgba(128,128,128,0.3);
     border-top-color: var(--primary-color);
     border-radius: 50%;
@@ -354,13 +377,12 @@ body.dark-mode .input-area { border-color: var(--border-dark); }
 }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
-/* Animation points (Correctif saut) */
+/* Animation points */
 .loading-dot {
     display: inline-block;
     animation: dot-bounce 1.4s infinite ease-in-out both;
     margin-left: 2px;
 }
-
 .loading-dot:nth-child(1) { animation-delay: -0.32s; }
 .loading-dot:nth-child(2) { animation-delay: -0.16s; }
 
