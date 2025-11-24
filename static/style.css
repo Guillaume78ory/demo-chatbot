@@ -9,7 +9,7 @@
     --primary-hover: #005fa3;
     
     /* --- MODE CLAIR (Gris doux / Bleu) --- */
-    --bg-light: #cdd2d9;       /* Fond gris soutenu */
+    --bg-light: #cdd2d9;       
     --surface-light: #ffffff;  
     --text-main-light: #1a1d21;
     --border-light: #b0b3b8;
@@ -192,10 +192,31 @@ body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border
 .header-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .header-text h1 { font-size: 1.2rem; margin: 0; font-weight: 600; }
 .header-text p { font-size: 0.8rem; margin: 4px 0 0; opacity: 0.9; }
-.header-controls { flex-shrink: 0; display: flex; align-items: center; }
 
-.theme-toggle-button { background: none; border: none; font-size: 1.5rem; cursor: pointer; padding: 10px; border-radius: 50%; margin-left: 5px; }
+.header-controls { flex-shrink: 0; display: flex; align-items: center; gap: 5px; }
+
+/* STYLE BOUTON NAV (Icone historique + Thème) */
+.theme-toggle-button { 
+    background: none; 
+    border: none; 
+    font-size: 1.5rem; 
+    cursor: pointer; 
+    padding: 8px; 
+    border-radius: 50%; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .theme-toggle-button:hover { background-color: rgba(255,255,255,0.1); }
+
+/* NOUVEAU : Style de l'image historique */
+.nav-icon {
+    width: 24px; 
+    height: 24px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
 .theme-toggle-button .icon-sun { display: none; }
 .theme-toggle-button .icon-moon { display: inline-block; }
 body.dark-mode .theme-toggle-button .icon-moon { display: none; }
@@ -224,7 +245,7 @@ body.dark-mode .theme-toggle-button .icon-sun { display: inline-block; }
     flex-grow: 1;
     width: 100%;
     max-width: 900px; 
-    margin: 0 auto; /* Centre le bloc horizontalement */
+    margin: 0 auto; 
     
     padding: 40px 20px; 
     display: flex;
@@ -253,29 +274,22 @@ body.dark-mode .bot-message strong { color: #60a5fa; }
 /* =========================================
    6. INPUT FLOTTANT (CORRECTION ALIGNEMENT)
    ========================================= */
-
-/* CORRECTION MAJEURE ICI : On applique le Flexbox sur l'ID du formulaire */
 form#chat-form {
-    /* Comportement Flexbox pour aligner Input + Bouton */
     display: flex;
     align-items: center;
     gap: 15px;
 
-    /* Largeur et Centrage (Identique à .chat-box) */
     width: 100%;
     max-width: 900px;
     margin: 0 auto;
     
-    /* Marges */
     padding: 0 20px 25px 20px;
     box-sizing: border-box;
     background-color: inherit;
 }
 
-/* La classe .input-area devient redondante mais on la garde propre */
-.input-area {
-    display: contents; /* Laisse le formulaire gérer le layout */
-}
+/* La classe .input-area n'est plus utilisée pour le layout, on laisse le form gérer */
+.input-area { display: contents; }
 
 #user-input {
     flex-grow: 1;
@@ -285,7 +299,7 @@ form#chat-form {
     border-style: solid;
     outline: none;
     font-size: 1.05rem;
-    min-width: 0; /* Sécurité Flexbox */
+    min-width: 0; 
 }
 #user-input:focus { border-color: var(--primary-color); box-shadow: 0 4px 15px rgba(0, 116, 189, 0.15); }
 
