@@ -223,8 +223,6 @@ body.dark-mode .theme-toggle-button .icon-sun { display: inline-block; }
 .chat-box {
     flex-grow: 1;
     width: 100%;
-    
-    /* CONTRAINTE GEMINI */
     max-width: 900px; 
     margin: 0 auto; /* Centre le bloc horizontalement */
     
@@ -234,7 +232,7 @@ body.dark-mode .theme-toggle-button .icon-sun { display: inline-block; }
     gap: 30px;
     overflow-y: auto;
     scroll-behavior: smooth;
-    box-sizing: border-box; /* Assure que le padding n'ajoute pas de largeur */
+    box-sizing: border-box;
 }
 
 .message {
@@ -255,25 +253,28 @@ body.dark-mode .bot-message strong { color: #60a5fa; }
 /* =========================================
    6. INPUT FLOTTANT (CORRECTION ALIGNEMENT)
    ========================================= */
+
+/* CORRECTION MAJEURE ICI : On applique le Flexbox sur l'ID du formulaire */
 form#chat-form {
+    /* Comportement Flexbox pour aligner Input + Bouton */
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    /* Largeur et Centrage (Identique à .chat-box) */
     width: 100%;
-    /* On retire le flex ici pour gérer le centrage dans .input-area */
-    display: block; 
-    padding-bottom: 25px;
+    max-width: 900px;
+    margin: 0 auto;
+    
+    /* Marges */
+    padding: 0 20px 25px 20px;
+    box-sizing: border-box;
     background-color: inherit;
 }
 
+/* La classe .input-area devient redondante mais on la garde propre */
 .input-area {
-    /* COPIE EXACTE DES CONTRAINTES DE .CHAT-BOX */
-    width: 100%;
-    max-width: 900px; /* Même largeur max */
-    margin: 0 auto;   /* Même centrage */
-    padding: 0 20px;  /* Même padding latéral */
-    
-    box-sizing: border-box;
-    display: flex;
-    gap: 15px;
-    align-items: center;
+    display: contents; /* Laisse le formulaire gérer le layout */
 }
 
 #user-input {
@@ -284,6 +285,7 @@ form#chat-form {
     border-style: solid;
     outline: none;
     font-size: 1.05rem;
+    min-width: 0; /* Sécurité Flexbox */
 }
 #user-input:focus { border-color: var(--primary-color); box-shadow: 0 4px 15px rgba(0, 116, 189, 0.15); }
 
