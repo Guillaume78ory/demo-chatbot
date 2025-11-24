@@ -1,25 +1,24 @@
 /* =========================================
-   1. VARIABLES & CONFIGURATION
+   1. VARIABLES
    ========================================= */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
 :root {
-    /* Couleur Bleue "Cost Control" */
     --primary-color: #0074bd; 
     --primary-hover: #005fa3;
     
-    /* --- MODE CLAIR (Moderne) --- */
-    --bg-light: #e4e6eb;      
-    --surface-light: #f0f2f5; 
-    --text-main-light: #1a1d21;
-    --border-light: #d1d5db;
-    --msg-bot-light: #ffffff; 
+    /* Mode Clair (Gris doux type WhatsApp/Gemini) */
+    --bg-light: #f0f4f9;      
+    --surface-light: #ffffff; 
+    --text-main-light: #1f1f1f;
+    --border-light: #e0e0e0;
+    --msg-bot-light: #f2f2f2; 
     
-    /* Couleurs Header/Footer Mode Clair */
+    /* Header/Footer Bleu */
     --header-bg-light: #0074bd;
     --header-text-light: #ffffff;
 
-    /* --- MODE SOMBRE (Style Gemini Dark) --- */
+    /* Mode Sombre (Gemini Dark) */
     --bg-dark: #131314;
     --surface-dark: #1e1f20;
     --header-dark: #1e1f20;
@@ -29,260 +28,88 @@
     --msg-user-dark: #004a77;
 }
 
-/* =========================================
-   2. STYLES GÉNÉRAUX
-   ========================================= */
 body {
     font-family: 'Inter', sans-serif;
     margin: 0;
     height: 100vh;
     overflow: hidden;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease;
 }
 
-/* --- Thème Clair --- */
-body.light-mode {
-    background-color: var(--bg-light);
-    color: var(--text-main-light);
-}
-body.light-mode .chat-container { background-color: var(--surface-light); }
+/* --- THÈME CLAIR --- */
+body.light-mode { background-color: var(--bg-light); color: var(--text-main-light); }
+body.light-mode .chat-container { background-color: var(--bg-light); } /* Fond global gris clair */
 
-/* Header & Footer : BLEU en mode clair */
-body.light-mode .chat-header { 
-    background-color: var(--header-bg-light); 
-    color: var(--header-text-light);
-    border-bottom: none;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
+/* Header Bleu */
+body.light-mode .chat-header { background-color: var(--header-bg-light); color: var(--header-text-light); box-shadow: 0 2px 8px rgba(0, 116, 189, 0.2); }
+body.light-mode .header-text h1, body.light-mode .header-text p, body.light-mode .theme-toggle-button, body.light-mode #history-toggle { color: #ffffff; }
+body.light-mode .chat-footer { background-color: var(--bg-light); color: #444746; }
 
-body.light-mode .header-text h1, 
-body.light-mode .header-text p,
-body.light-mode .theme-toggle-button, 
-body.light-mode #history-toggle { 
-    color: #ffffff; 
-}
+/* Sidebar */
+body.light-mode #history-sidebar { background-color: #f0f4f9; border-right: 1px solid transparent; }
+body.light-mode .sidebar-header { border-bottom: 1px solid #e0e0e0; }
+body.light-mode #history-list li { background: #ffffff; border: none; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+body.light-mode #history-list li:hover { background-color: #e1e5ea; }
+body.light-mode .icon-btn { color: #1f1f1f; }
 
-body.light-mode .chat-footer { 
-    background-color: var(--header-bg-light); 
-    color: rgba(255, 255, 255, 0.9);
-}
-
-/* Sidebar Mode Clair */
-body.light-mode #history-sidebar { 
-    background-color: #ffffff; 
-    border-right: 1px solid var(--border-light); 
-}
-body.light-mode .sidebar-header { border-bottom: 1px solid var(--border-light); }
-
-/* Messages Mode Clair */
-body.light-mode .bot-message { 
-    background-color: var(--msg-bot-light); 
-    color: #1a1d21;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    border: 1px solid transparent;
-}
-body.light-mode .user-message { 
-    background-color: #e8f0fe;
-    color: #004a77; 
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-} 
-
-body.light-mode #user-input { background: white; color: #333; border-color: #ccc; }
-body.light-mode #history-list li { border: 1px solid var(--border-light); background: #f8f9fa; }
-body.light-mode #history-list li:hover { background-color: #e9ecef; }
-body.light-mode .icon-btn { color: #333; }
+/* Messages */
+body.light-mode .bot-message { background-color: #ffffff; color: #1f1f1f; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+body.light-mode .user-message { background-color: #d3e3fd; color: #041e49; } /* Bleu très pâle Gemini */
+body.light-mode #user-input { background: #ffffff; color: #1f1f1f; border: 1px solid transparent; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
 
 
-/* --- Thème Sombre --- */
-body.dark-mode {
-    background-color: var(--bg-dark);
-    color: var(--text-main-dark);
-}
+/* --- THÈME SOMBRE --- */
+body.dark-mode { background-color: var(--bg-dark); color: var(--text-main-dark); }
 body.dark-mode .chat-container { background-color: var(--bg-dark); }
 body.dark-mode .chat-header { background-color: var(--header-dark); border-bottom: 1px solid var(--border-dark); }
 body.dark-mode .sidebar-header { border-bottom: 1px solid var(--border-dark); }
 body.dark-mode #history-sidebar { background-color: var(--surface-dark); border-right: 1px solid var(--border-dark); }
-body.dark-mode .bot-message { background-color: var(--msg-bot-dark); color: var(--text-main-dark); }
+body.dark-mode .bot-message { background-color: var(--surface-dark); color: var(--text-main-dark); }
 body.dark-mode .user-message { background-color: var(--msg-user-dark); color: white; }
 body.dark-mode #user-input { background-color: var(--surface-dark); color: white; border-color: var(--border-dark); }
 body.dark-mode #history-list li { background-color: var(--surface-dark); border: 1px solid var(--border-dark); color: var(--text-main-dark); }
 body.dark-mode #history-list li:hover { background-color: #2c2e30; }
 body.dark-mode .icon-btn, body.dark-mode .theme-toggle-button { color: white; }
-body.dark-mode .chat-footer { color: #9ca3af; border-top: 1px solid var(--border-dark); }
+body.dark-mode .chat-footer { color: #9ca3af; }
 
-
-/* =========================================
-   3. LAYOUT
-   ========================================= */
+/* --- LAYOUT --- */
 .app-wrapper { display: flex; width: 100vw; height: 100vh; }
+.chat-container { flex: 1; display: flex; flex-direction: column; height: 100vh; min-width: 0; position: relative; }
 
-.chat-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    min-width: 0;
-    position: relative;
-}
-
-/* =========================================
-   4. SIDEBAR HISTORIQUE
-   ========================================= */
-#history-sidebar {
-    width: 0;
-    overflow: hidden;
-    transition: width 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    height: 100vh;
-    white-space: nowrap;
-    z-index: 20;
-}
-
+/* --- SIDEBAR --- */
+#history-sidebar { width: 0; overflow: hidden; transition: width 0.3s ease; display: flex; flex-direction: column; flex-shrink: 0; height: 100vh; white-space: nowrap; z-index: 20; }
 .app-wrapper.history-open #history-sidebar { width: 300px; }
-
-.sidebar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    flex-shrink: 0;
-}
+.sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; flex-shrink: 0; }
 .sidebar-header h2 { margin: 0; font-size: 1.2rem; font-weight: 600; }
-
-#close-history {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+#close-history { background: none; border: none; font-size: 1.5rem; cursor: pointer; padding: 5px; display: flex; align-items: center; justify-content: center; }
 #close-history:hover { opacity: 0.7; }
+#history-list { padding: 15px; margin: 0; list-style: none; overflow-y: auto; flex-grow: 1; }
+#history-list li { padding: 12px; margin-bottom: 8px; border-radius: 12px; cursor: pointer; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-#history-list {
-    padding: 15px;
-    margin: 0;
-    list-style: none;
-    overflow-y: auto;
-    flex-grow: 1;
-}
-
-#history-list li {
-    padding: 12px;
-    margin-bottom: 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* =========================================
-   5. HEADER & LOGO (CORRECTION PADDING)
-   ========================================= */
-.chat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    /* PADDING : Plus large sur les côtés */
-    padding: 20px 40px;
-    flex-shrink: 0;
-    width: 100%; 
-    box-sizing: border-box;
-}
-
-.header-left { 
-    display: flex; 
-    align-items: center; 
-    gap: 20px;
-    flex-grow: 1; 
-    min-width: 0; 
-}
-
-.logo {
-    width: 45px;
-    height: 45px;
-    object-fit: contain;
-    background: transparent;
-    padding: 0;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    flex-shrink: 0; 
-}
-
-.header-text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 0;
-}
-
-.header-text h1 { 
-    font-size: 1.2rem; 
-    margin: 0; 
-    font-weight: 600; 
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.header-text p { 
-    font-size: 0.8rem; 
-    margin: 4px 0 0; 
-    opacity: 0.9;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.header-controls {
-    flex-shrink: 0; 
-    display: flex;
-    align-items: center;
-}
-
-.theme-toggle-button {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 10px; 
-    border-radius: 50%;
-    margin-left: 5px; 
-}
+/* --- HEADER --- */
+.chat-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; flex-shrink: 0; width: 100%; box-sizing: border-box; }
+.header-left { display: flex; align-items: center; gap: 20px; flex-grow: 1; min-width: 0; }
+.logo { width: 45px; height: 45px; object-fit: contain; background: transparent; padding: 0; border: none; border-radius: 0; box-shadow: none; flex-shrink: 0; }
+.header-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.header-text h1 { font-size: 1.2rem; margin: 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.header-text p { font-size: 0.8rem; margin: 4px 0 0; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.header-controls { flex-shrink: 0; display: flex; align-items: center; }
+.theme-toggle-button { background: none; border: none; font-size: 1.5rem; cursor: pointer; padding: 10px; border-radius: 50%; margin-left: 5px; }
 .theme-toggle-button:hover { background-color: rgba(255,255,255,0.1); }
-
 .theme-toggle-button .icon-sun { display: none; }
 .theme-toggle-button .icon-moon { display: inline-block; }
-
 body.dark-mode .theme-toggle-button .icon-moon { display: none; }
 body.dark-mode .theme-toggle-button .icon-sun { display: inline-block; }
+@media (max-width: 600px) { .header-text p { display: none; } .header-text h1 { font-size: 1rem; } .logo { width: 35px; height: 35px; } .chat-header { padding: 10px 15px; } }
 
-@media (max-width: 600px) {
-    .header-text p { display: none; }
-    .header-text h1 { font-size: 1rem; }
-    .logo { width: 35px; height: 35px; }
-    .chat-header { padding: 10px 20px; }
-}
-
-/* =========================================
-   6. MESSAGES (CORRECTION PADDING PLEINE LARGEUR)
-   ========================================= */
+/* --- ZONE CHAT (STYLE GEMINI - PADDING) --- */
 .chat-box {
     flex-grow: 1;
     width: 100%;
-    /* SUPPRESSION du max-width et du centrage */
-    /* max-width: 900px;  <- ENLEVÉ */
-    margin: 0;
-    /* PADDING : Mêmes marges latérales que le header */
-    padding: 30px 40px; 
+    /* C'est ici la "Magie" Gemini : on centre une colonne de 850px max */
+    max-width: 850px; 
+    margin: 0 auto; 
+    padding: 40px 20px; 
     display: flex;
     flex-direction: column;
     gap: 30px;
@@ -290,77 +117,53 @@ body.dark-mode .theme-toggle-button .icon-sun { display: inline-block; }
     scroll-behavior: smooth;
 }
 
-/* Sur mobile, on réduit le padding latéral */
-@media (max-width: 768px) {
-    .chat-box { padding: 20px 20px; }
-}
-
 .message {
-    max-width: 85%;
-    padding: 18px 25px;
-    border-radius: 20px;
+    max-width: 90%; /* Messages plus larges */
+    padding: 15px 25px;
+    border-radius: 18px;
     line-height: 1.7;
     font-size: 1rem;
 }
 
-.bot-message { 
-    align-self: flex-start; 
-    border-bottom-left-radius: 4px; 
-}
-
-.user-message { 
-    align-self: flex-end; 
-    border-bottom-right-radius: 4px; 
-}
-
+.bot-message { align-self: flex-start; border-bottom-left-radius: 4px; }
+.user-message { align-self: flex-end; border-bottom-right-radius: 4px; }
 .bot-message ul { margin-top: 10px; padding-left: 20px; }
-.bot-message strong { color: #60a5fa; }
-body.light-mode .bot-message strong { color: var(--primary-color); }
+.bot-message strong { color: #0074bd; }
+body.dark-mode .bot-message strong { color: #60a5fa; }
 
-
-/* =========================================
-   7. INPUT & BOUTON (CORRECTION PADDING)
-   ========================================= */
+/* --- INPUT (STYLE GEMINI - FLOTTANT) --- */
 form#chat-form {
     width: 100%;
     display: flex;
-    /* SUPPRESSION du centrage */
-    /* justify-content: center; <- ENLEVÉ */
-    padding-bottom: 20px;
+    justify-content: center;
+    padding-bottom: 25px;
     background-color: inherit;
 }
 
 .input-area {
     width: 100%;
-    /* SUPPRESSION du max-width */
-    /* max-width: 850px; <- ENLEVÉ */
-    /* PADDING : Mêmes marges latérales que le reste */
-    padding: 10px 40px;
+    max-width: 800px; /* Input un peu plus étroit que le texte pour l'esthétique */
+    padding: 0 20px;
     display: flex;
     gap: 15px;
     align-items: center;
-}
-
-/* Sur mobile */
-@media (max-width: 768px) {
-    .input-area { padding: 10px 20px; }
+    position: relative;
 }
 
 #user-input {
     flex-grow: 1;
     padding: 18px 25px;
-    border-radius: 30px;
+    border-radius: 35px; /* Très arrondi */
     border-width: 1px;
     border-style: solid;
     outline: none;
     font-size: 1.05rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 #user-input:focus { border-color: var(--primary-color); box-shadow: 0 4px 15px rgba(0, 116, 189, 0.15); }
 
 #send-btn {
-    width: 55px;
-    height: 55px;
+    width: 50px;
+    height: 50px;
     padding: 0;
     border-radius: 50%;
     background-color: var(--primary-color);
@@ -371,53 +174,29 @@ form#chat-form {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 #send-btn:hover { opacity: 0.9; transform: scale(1.05); }
 
-/* =========================================
-   8. FOOTER (CORRECTION PADDING)
-   ========================================= */
-.chat-footer {
-    /* PADDING : Mêmes marges latérales */
-    padding: 15px 40px;
-    text-align: center;
-    font-size: 0.8rem;
-    flex-shrink: 0;
-    width: 100%;
-    box-sizing: border-box;
-}
-.chat-footer p { margin: 2px 0; opacity: 0.8; }
+/* --- FOOTER --- */
+.chat-footer { padding: 12px; text-align: center; font-size: 0.75rem; flex-shrink: 0; width: 100%; box-sizing: border-box; }
+.chat-footer p { margin: 2px 0; opacity: 0.7; }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #555; }
+::-webkit-scrollbar-thumb { background: #bdbdbd; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #999; }
+body.dark-mode ::-webkit-scrollbar-thumb { background: #444746; }
 
-/* Spinner */
+/* Loading */
 .loading-message-container { display: flex; align-items: center; gap: 12px; }
-.inline-spinner {
-    width: 20px; height: 20px;
-    border: 2px solid rgba(128,128,128,0.3);
-    border-top-color: var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
+.inline-spinner { width: 20px; height: 20px; border: 2px solid rgba(128,128,128,0.3); border-top-color: var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
-/* Animation points */
-.loading-dot {
-    display: inline-block;
-    animation: dot-bounce 1.4s infinite ease-in-out both;
-    margin-left: 2px;
-}
+.loading-dot { display: inline-block; animation: dot-bounce 1.4s infinite ease-in-out both; margin-left: 2px; }
 .loading-dot:nth-child(1) { animation-delay: -0.32s; }
 .loading-dot:nth-child(2) { animation-delay: -0.16s; }
-
-@keyframes dot-bounce {
-  0%, 80%, 100% { transform: translateY(0); }
-  40% { transform: translateY(-6px); }
-}
+@keyframes dot-bounce { 0%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-6px); } }
 
 .message.highlight { box-shadow: 0 0 0 3px var(--primary-color); transition: box-shadow 0.3s; }

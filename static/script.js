@@ -6,12 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggleBtn = document.getElementById('theme-toggle');
     let chatHistory = [];
 
-    /* --- AJOUT : Sélecteurs pour l'historique --- */
     const appWrapper = document.querySelector('.app-wrapper');
     const historyToggleBtn = document.getElementById('history-toggle');
     const historyList = document.getElementById('history-list');
+    const closeHistoryBtn = document.getElementById('close-history');
 
-    // --- GESTION DU MODE NUIT ---
+    // --- GESTION DU THÈME ---
     function enableDarkMode() {
         document.body.classList.remove('light-mode');
         document.body.classList.add('dark-mode');
@@ -25,10 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        enableDarkMode();
-    } else {
+    // Logique : Si 'light' est explicitement sauvegardé, on le met. SINON -> Dark.
+    if (savedTheme === 'light') {
         enableLightMode();
+    } else {
+        enableDarkMode();
     }
 
     themeToggleBtn.addEventListener('click', () => {
@@ -39,59 +40,54 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    /* --- AJOUT : Logique pour le panneau d'historique --- */
+    // --- HISTORIQUE ---
     historyToggleBtn.addEventListener('click', () => {
         appWrapper.classList.toggle('history-open');
     });
 
-    /* --- AJOUT : Fonction pour ajouter un élément à l'historique --- */
+    if (closeHistoryBtn) {
+        closeHistoryBtn.addEventListener('click', () => {
+            appWrapper.classList.remove('history-open');
+        });
+    }
+
     function addHistoryItem(text, messageId) {
         const li = document.createElement('li');
-        // Tronque le texte pour l'aperçu
         li.textContent = text.length > 40 ? text.substring(0, 40) + '...' : text;
-        li.title = text; // Affiche le texte complet au survol
-        
+        li.title = text;
         li.addEventListener('click', () => {
             const targetMessage = document.getElementById(messageId);
             if (targetMessage) {
-                // Fait défiler jusqu'au message
                 targetMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                
-                // Ajoute un surlignage temporaire
                 targetMessage.classList.add('highlight');
-                setTimeout(() => {
-                    targetMessage.classList.remove('highlight');
-                }, 2000); // Durée du surlignage
+                setTimeout(() => targetMessage.classList.remove('highlight'), 2000);
             }
-            // Optionnel : ferme la sidebar sur mobile après avoir cliqué
-            if (window.innerWidth <= 768) {
-                appWrapper.classList.remove('history-open');
-            }
+            if (window.innerWidth <= 768) appWrapper.classList.remove('history-open');
         });
-
-        // Ajoute en haut de la liste (prepend)
         historyList.prepend(li);
     }
 
-    // --- FONCTIONS DU CHAT ---
     function isRefusal(message) {
         const lowerCaseMessage = message.toLowerCase();
         const refusalPhrases = [
             "i cannot answer", "i can't answer", "i do not know", "i don't know",
             "based on the provided context", "the provided documents do not mention",
-            "does not seem that there is", "je ne peux pas répondre", "je ne sais pas",
-            "d'après le contexte fourni", "les documents fournis ne mentionnent pas",
-            "pas d'information", "je suis désolé"
+            "je ne peux pas répondre", "je ne sais pas",
+            "d'après le contexte fourni", "pas d'information", "je suis désolé"
         ];
         return refusalPhrases.some(phrase => lowerCaseMessage.includes(phrase));
     }
 
-    /* --- MODIFIÉ : addMessage --- */
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/[&<>"]/g, c => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'
+        }[c]));
+    }
+
     function addMessage(message, sender, sources = null) {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
-        
-        /* AJOUT : Crée un ID unique pour chaque message */
         const messageId = 'msg-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
         messageDiv.id = messageId;
         
@@ -100,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (sources && Array.isArray(sources) && sources.length && !isRefusal(message)) {
             const grouped = groupSources(sources);
-            inner += '<strong>Sources utilisées :</strong><ul>';
+            inner += '<br><strong>Sources utilisées :</strong><ul>';
             grouped.forEach(g => {
                 inner += `<li>${escapeHtml(g.doc)} — p.${escapeHtml(g.pages.join(', '))}</li>`;
             });
@@ -111,19 +107,14 @@ document.addEventListener('DOMContentLoaded', () => {
         chatBox.appendChild(messageDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
 
-        /* AJOUT : Appelle la fonction d'historique si c'est un message utilisateur */
-        if (sender === 'user') {
-            addHistoryItem(message, messageId);
-        }
+        if (sender === 'user') addHistoryItem(message, messageId);
     }
     
     async function sendMessage() {
         const query = userInput.value.trim();
         if (!query) return;
-
         addMessage(query, 'user');
         userInput.value = '';
-        
         userInput.disabled = true;
         sendBtn.disabled = true;
 
@@ -132,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingMessageElement.innerHTML = `
             <div class="loading-message-container">
                 <div class="inline-spinner"></div>
-                <p><i>L'assistant réfléchit <span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></i></p>
+                <p><i>L'assistant réfléchit<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></i></p>
             </div>
         `;
         chatBox.appendChild(loadingMessageElement);
@@ -145,14 +136,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ query: query, chat_history: chatHistory })
             });
             if (!resp.ok) throw new Error(`Erreur réseau : ${resp.statusText}`);
-            
             const data = await resp.json();
-            
             loadingMessageElement.remove(); 
             addMessage(data.answer || '', 'bot', data.sources);
             chatHistory.push({ role: 'user', content: query });
             chatHistory.push({ role: 'assistant', content: data.answer || '' });
-            
         } catch (error) {
             console.error('Erreur lors de la requête :', error);
             loadingMessageElement.remove(); 
@@ -170,12 +158,10 @@ document.addEventListener('DOMContentLoaded', () => {
             sendMessage();
         });
     } else {
-        console.error("ERREUR CRITIQUE : Le formulaire avec l'ID 'chat-form' est introuvable.");
+        console.error("Erreur : #chat-form introuvable");
     }
 
-    // --- FONCTIONS UTILITAIRES ---
     function safeGetPage(meta) {if (!meta) return null; return meta['Page/Feuille'] || meta['page/feuille'] || meta.page || meta.page_number || meta.pageno || null;}
     function safeGetDoc(meta) {if (!meta) return 'inconnu'; return meta.Document || meta.document || meta.source || meta.file || meta.filename || meta.path || 'inconnu';}
     function groupSources(sources) {const map = new Map(); (sources || []).forEach(s => {try {const doc = safeGetDoc(s) || 'inconnu'; const page = safeGetPage(s) || '?'; if (!map.has(doc)) map.set(doc, new Set()); map.get(doc).add(String(page));} catch (e) {console.warn('Erreur dans groupSources', s, e);}}); const out = []; for (const [doc, pagesSet] of map.entries()) {const pages = Array.from(pagesSet).sort((a,b) => {if (a === '?') return 1; if (b === '?') return -1; const na = Number(a), nb = Number(b); if (isNaN(na) || isNaN(nb)) return a.localeCompare(b); return na - nb;}); out.push({ doc, pages });} return out;}
-    function escapeHtml(str) {if (str === null || str === undefined) return ''; return String(str).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 });
