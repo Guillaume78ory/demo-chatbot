@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot Cost Control</title>
-    <link rel="stylesheet" href="static/style.css?v=final_gemini">
+    <link rel="stylesheet" href="static/style.css?v=4">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="static/images/logo.png?v=final">
+    <link rel="icon" type="image/png" href="/static/images/logo.png?v=3">
 </head>
 <body class="dark-mode">
     
@@ -17,7 +17,8 @@
                 <h2>Historique</h2>
                 <button id="close-history" class="icon-btn" title="Fermer l'historique">✕</button>
             </div>
-            <ul id="history-list"></ul>
+            <ul id="history-list">
+                </ul>
         </aside>
 
         <div class="chat-container">
@@ -31,7 +32,10 @@
                 </div>
                 
                 <div class="header-controls">
-                    <button id="history-toggle" class="theme-toggle-button" title="Historique">🕒</button>
+                    <button id="history-toggle" class="theme-toggle-button" title="Historique">
+                        <img src="static/images/historique.png" alt="Historique" class="nav-icon">
+                    </button>
+                    
                     <button id="theme-toggle" class="theme-toggle-button" title="Changer de thème">
                         <span class="icon-sun">☀️</span>
                         <span class="icon-moon">🌙</span>
@@ -57,6 +61,6 @@
         </div>
 
     </div> 
-    <script src="static/script.js?v=final_gemini"></script>
+    <script src="static/script.js"></script>
 </body>
 </html>
