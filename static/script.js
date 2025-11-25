@@ -10,8 +10,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const historyToggleBtn = document.getElementById('history-toggle');
     const historyList = document.getElementById('history-list');
     const closeHistoryBtn = document.getElementById('close-history');
+    
+    const fileInput = document.getElementById('file-input');
+    const attachBtn = document.getElementById('attach-btn');
 
-    // --- GESTION DU THÈME ---
+    // --- GESTION THEME ---
     function enableDarkMode() {
         document.body.classList.remove('light-mode');
         document.body.classList.add('dark-mode');
@@ -25,81 +28,84 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const savedTheme = localStorage.getItem('theme');
-    // Logique : Si 'light' est explicitement sauvegardé, on le met. SINON -> Dark.
-    if (savedTheme === 'light') {
-        enableLightMode();
-    } else {
-        enableDarkMode();
-    }
+    if (savedTheme === 'light') enableLightMode();
+    else enableDarkMode();
 
     themeToggleBtn.addEventListener('click', () => {
-        if (document.body.classList.contains('dark-mode')) {
-            enableLightMode();
-        } else {
-            enableDarkMode();
-        }
+        if (document.body.classList.contains('dark-mode')) enableLightMode();
+        else enableDarkMode();
     });
 
     // --- HISTORIQUE ---
-    historyToggleBtn.addEventListener('click', () => {
-        appWrapper.classList.toggle('history-open');
-    });
-
-    if (closeHistoryBtn) {
-        closeHistoryBtn.addEventListener('click', () => {
-            appWrapper.classList.remove('history-open');
-        });
-    }
+    historyToggleBtn.addEventListener('click', () => appWrapper.classList.toggle('history-open'));
+    if (closeHistoryBtn) closeHistoryBtn.addEventListener('click', () => appWrapper.classList.remove('history-open'));
 
     function addHistoryItem(text, messageId) {
         const li = document.createElement('li');
         li.textContent = text.length > 40 ? text.substring(0, 40) + '...' : text;
         li.title = text;
         li.addEventListener('click', () => {
-            const targetMessage = document.getElementById(messageId);
-            if (targetMessage) {
-                targetMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                targetMessage.classList.add('highlight');
-                setTimeout(() => targetMessage.classList.remove('highlight'), 2000);
+            const target = document.getElementById(messageId);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                target.classList.add('highlight');
+                setTimeout(() => target.classList.remove('highlight'), 2000);
             }
             if (window.innerWidth <= 768) appWrapper.classList.remove('history-open');
         });
         historyList.prepend(li);
     }
 
-    function isRefusal(message) {
-        const lowerCaseMessage = message.toLowerCase();
-        const refusalPhrases = [
-            "i cannot answer", "i can't answer", "i do not know", "i don't know",
-            "based on the provided context", "the provided documents do not mention",
-            "je ne peux pas répondre", "je ne sais pas",
-            "d'après le contexte fourni", "pas d'information", "je suis désolé"
-        ];
-        return refusalPhrases.some(phrase => lowerCaseMessage.includes(phrase));
+    // --- UPLOAD ---
+    if (attachBtn && fileInput) {
+        attachBtn.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', async () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+            
+            addMessage(`📤 Analyse de "${file.name}"...`, 'bot');
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const resp = await fetch('/api/upload', { method: 'POST', body: formData });
+                const data = await resp.json();
+                addMessage(data.status === 'success' ? `✅ ${data.message}` : `❌ Erreur: ${data.message}`, 'bot');
+            } catch (e) {
+                addMessage("❌ Erreur réseau upload.", 'bot');
+            }
+            fileInput.value = ''; 
+        });
     }
 
+    // --- CHAT ---
     function escapeHtml(str) {
-        if (str === null || str === undefined) return '';
-        return String(str).replace(/[&<>"]/g, c => ({
-            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'
-        }[c]));
+        if (!str) return '';
+        return String(str).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     }
 
     function addMessage(message, sender, sources = null) {
         const messageDiv = document.createElement('div');
         messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
-        const messageId = 'msg-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        const messageId = 'msg-' + Date.now();
         messageDiv.id = messageId;
         
-        const formattedMessage = escapeHtml(message).replace(/\n/g, '<br>');
-        let inner = `<p>${formattedMessage}</p>`;
+        let inner = `<p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>`;
         
-        if (sources && Array.isArray(sources) && sources.length && !isRefusal(message)) {
-            const grouped = groupSources(sources);
-            inner += '<br><strong>Sources utilisées :</strong><ul>';
-            grouped.forEach(g => {
-                inner += `<li>${escapeHtml(g.doc)} — p.${escapeHtml(g.pages.join(', '))}</li>`;
+        if (sources && sources.length && sender !== 'user') {
+            inner += '<br><strong>Sources :</strong><ul>';
+            const grouped = {};
+            sources.forEach(s => {
+                const doc = s['Document'] || 'Inconnu';
+                const page = s['Page/Feuille'] || 'N/A';
+                if (!grouped[doc]) grouped[doc] = new Set();
+                grouped[doc].add(page);
             });
+            
+            for (const [doc, pages] of Object.entries(grouped)) {
+                inner += `<li>${escapeHtml(doc)} (p. ${Array.from(pages).join(', ')})</li>`;
+            }
             inner += '</ul>';
         }
 
@@ -113,20 +119,16 @@ document.addEventListener('DOMContentLoaded', () => {
     async function sendMessage() {
         const query = userInput.value.trim();
         if (!query) return;
+
         addMessage(query, 'user');
         userInput.value = '';
         userInput.disabled = true;
         sendBtn.disabled = true;
 
-        const loadingMessageElement = document.createElement('div');
-        loadingMessageElement.classList.add('message', 'bot-message');
-        loadingMessageElement.innerHTML = `
-            <div class="loading-message-container">
-                <div class="inline-spinner"></div>
-                <p><i>L'assistant réfléchit<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></i></p>
-            </div>
-        `;
-        chatBox.appendChild(loadingMessageElement);
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'message bot-message';
+        loadingDiv.innerHTML = `<div class="loading-message-container"><div class="inline-spinner"></div><p><i>L'assistant réfléchit<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></i></p></div>`;
+        chatBox.appendChild(loadingDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
 
         try {
@@ -135,16 +137,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: query, chat_history: chatHistory })
             });
-            if (!resp.ok) throw new Error(`Erreur réseau : ${resp.statusText}`);
             const data = await resp.json();
-            loadingMessageElement.remove(); 
+            loadingDiv.remove();
             addMessage(data.answer || '', 'bot', data.sources);
             chatHistory.push({ role: 'user', content: query });
             chatHistory.push({ role: 'assistant', content: data.answer || '' });
-        } catch (error) {
-            console.error('Erreur lors de la requête :', error);
-            loadingMessageElement.remove(); 
-            addMessage("Désolé, une erreur est survenue. Veuillez réessayer.", 'bot');
+        } catch (e) {
+            loadingDiv.remove();
+            addMessage("Erreur technique.", 'bot');
         } finally {
             userInput.disabled = false;
             sendBtn.disabled = false;
@@ -153,15 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (chatForm) {
-        chatForm.addEventListener('submit', (event) => {
-            event.preventDefault(); 
-            sendMessage();
-        });
-    } else {
-        console.error("Erreur : #chat-form introuvable");
+        chatForm.addEventListener('submit', (e) => { e.preventDefault(); sendMessage(); });
     }
-
-    function safeGetPage(meta) {if (!meta) return null; return meta['Page/Feuille'] || meta['page/feuille'] || meta.page || meta.page_number || meta.pageno || null;}
-    function safeGetDoc(meta) {if (!meta) return 'inconnu'; return meta.Document || meta.document || meta.source || meta.file || meta.filename || meta.path || 'inconnu';}
-    function groupSources(sources) {const map = new Map(); (sources || []).forEach(s => {try {const doc = safeGetDoc(s) || 'inconnu'; const page = safeGetPage(s) || '?'; if (!map.has(doc)) map.set(doc, new Set()); map.get(doc).add(String(page));} catch (e) {console.warn('Erreur dans groupSources', s, e);}}); const out = []; for (const [doc, pagesSet] of map.entries()) {const pages = Array.from(pagesSet).sort((a,b) => {if (a === '?') return 1; if (b === '?') return -1; const na = Number(a), nb = Number(b); if (isNaN(na) || isNaN(nb)) return a.localeCompare(b); return na - nb;}); out.push({ doc, pages });} return out;}
 });
