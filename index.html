@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot Cost Control</title>
-    <link rel="stylesheet" href="static/style.css?v=4">
+    <link rel="stylesheet" href="static/style.css?v=final">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="/static/images/logo.png?v=3">
 </head>
@@ -15,10 +15,9 @@
         <aside id="history-sidebar">
             <div class="sidebar-header">
                 <h2>Historique</h2>
-                <button id="close-history" class="icon-btn" title="Fermer l'historique">✕</button>
+                <button id="close-history" class="icon-btn" title="Fermer">✕</button>
             </div>
-            <ul id="history-list">
-                </ul>
+            <ul id="history-list"></ul>
         </aside>
 
         <div class="chat-container">
@@ -33,10 +32,9 @@
                 
                 <div class="header-controls">
                     <button id="history-toggle" class="theme-toggle-button" title="Historique">
-                        <img src="static/images/historique.png" alt="Historique" class="nav-icon">
+                        <img src="static/images/historique.png" alt="Hist" class="nav-icon">
                     </button>
-                    
-                    <button id="theme-toggle" class="theme-toggle-button" title="Changer de thème">
+                    <button id="theme-toggle" class="theme-toggle-button" title="Thème">
                         <span class="icon-sun">☀️</span>
                         <span class="icon-moon">🌙</span>
                     </button>
@@ -45,11 +43,15 @@
 
             <div id="chat-box" class="chat-box">
                 <div class="message bot-message">
-                    <p>Bonjour ! Je suis l'assistant du département Cost Control. Comment puis-je vous aider aujourd'hui ?</p>
+                    <p>Bonjour ! Je suis l'assistant du département Cost Control. Posez une question ou <strong>cliquez sur le trombone</strong> pour analyser un document.</p>
                 </div>
             </div>
 
-            <form id="chat-form" class="input-area">
+            <form id="chat-form">
+                <input type="file" id="file-input" accept=".pdf" style="display: none;">
+                
+                <button type="button" id="attach-btn" title="Joindre un PDF">📎</button>
+
                 <input type="text" id="user-input" placeholder="Posez votre question ici..." autocomplete="off" autofocus>
                 <button type="submit" id="send-btn" title="Envoyer">➤</button>
             </form>
@@ -61,6 +63,6 @@
         </div>
 
     </div> 
-    <script src="static/script.js"></script>
+    <script src="static/script.js?v=final"></script>
 </body>
 </html>
