@@ -4,65 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot Cost Control</title>
-    <link rel="stylesheet" href="static/style.css?v=final">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/static/images/logo.png?v=3">
+    <link rel="stylesheet" href="static/style.css">
+    <link rel="icon" type="image/png" href="static/images/logo.png">
 </head>
-<body class="dark-mode">
+<body class="light-mode">
     
     <div class="app-wrapper">
 
         <aside id="history-sidebar">
-            <div class="sidebar-header">
-                <h2>Historique</h2>
-                <button id="close-history" class="icon-btn" title="Fermer">✕</button>
-            </div>
-            <ul id="history-list"></ul>
+            <h2>Historique</h2>
+            <ul id="history-list">
+                </ul>
         </aside>
 
         <div class="chat-container">
             <header class="chat-header">
-                <div class="header-left">
-                    <img src="static/images/logo.png" alt="Logo" class="logo">
-                    <div class="header-text">
-                        <h1>Assistant Cost Control</h1>
-                        <p>Expert en procédures & finances</p>
-                    </div>
+                
+                <img src="static/images/logo.png" alt="Logo" class="logo">
+                <div class="header-text">
+                    <h1>Chatbot - Département Cost Control</h1>
+                    <p>Assistant intelligent pour poser des questions sur les procédures de Cost Control</p>
                 </div>
                 
-                <div class="header-controls">
-                    <button id="history-toggle" class="theme-toggle-button" title="Historique">
-                        <img src="static/images/historique.png" alt="Hist" class="nav-icon">
-                    </button>
-                    <button id="theme-toggle" class="theme-toggle-button" title="Thème">
-                        <span class="icon-sun">☀️</span>
-                        <span class="icon-moon">🌙</span>
-                    </button>
-                </div>
+                <button id="history-toggle" class="theme-toggle-button">🕒</button>
+                
+                <button id="theme-toggle" class="theme-toggle-button">
+                    <span class="icon-sun">☀️</span>
+                    <span class="icon-moon">🌙</span>
+                </button>
             </header>
 
             <div id="chat-box" class="chat-box">
                 <div class="message bot-message">
-                    <p>Bonjour ! Je suis l'assistant du département Cost Control. Posez une question ou <strong>cliquez sur le trombone</strong> pour analyser un document.</p>
+                    <p>Bonjour ! Je suis l'assistant du département Cost Control. Comment puis-je vous aider ?</p>
                 </div>
             </div>
 
-            <form id="chat-form">
-                <input type="file" id="file-input" accept=".pdf" style="display: none;">
-                
-                <button type="button" id="attach-btn" title="Joindre un PDF">📎</button>
-
-                <input type="text" id="user-input" placeholder="Posez votre question ici..." autocomplete="off" autofocus>
-                <button type="submit" id="send-btn" title="Envoyer">➤</button>
+            <form id="chat-form" class="input-area">
+                <input type="text" id="user-input" placeholder="Posez votre question ici..." autofocus>
+                <button type="submit" id="send-btn">Envoyer</button>
             </form>
-            
             <footer class="chat-footer">
                 <p>Développé par le département Cost Control</p>
-                <p>⚠️ Disclaimer : L'IA peut commettre des erreurs, vérifiez les sources.</p>
+                <p>⚠️Disclaimer : Le Chatbot peut se tromper, veillez à toujours vérifier les sources indiquées⚠️</p>
             </footer>
         </div>
 
-    </div> 
-    <script src="static/script.js?v=final"></script>
+    </div> <script src="static/script.js"></script>
 </body>
 </html>
