@@ -1,19 +1,25 @@
+# --- Cœur RAG & Base Vectorielle (Versions figées sur votre local) ---
+# Ces versions sont critiques pour éviter l'erreur "__fields_set__"
+langchain==0.3.27
+langchain-community==0.3.29
+pydantic==2.11.9
+faiss-cpu==1.12.0
+
+# --- Intégration OpenAI ---
+# Nécessaire car votre code utilise "from langchain_openai import ..."
+langchain-openai>=0.1.20
+tiktoken
+
+# --- Serveur API & Web ---
 fastapi
 uvicorn
-gunicorn
-pydantic
-python-multipart
+
+# --- Traitement de Fichiers ---
 PyPDF2
 python-docx
 pandas
 openpyxl
-langdetect
+
+# --- Utilitaires ---
 python-dotenv
-langchain==0.1.16
-langchain-community==0.0.34
-langchain-core==0.1.45
-langchain-openai==0.1.3
-langchain-text-splitters==0.0.1
-faiss-cpu
-tiktoken
-pycryptodome
+langdetect
