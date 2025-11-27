@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const historyList = document.getElementById('history-list');
     const closeHistoryBtn = document.getElementById('close-history');
     
+    // Éléments Upload
     const fileInput = document.getElementById('file-input');
     const attachBtn = document.getElementById('attach-btn');
 
@@ -20,13 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('dark-mode');
         localStorage.setItem('theme', 'dark');
     }
-
     function enableLightMode() {
         document.body.classList.remove('dark-mode');
         document.body.classList.add('light-mode');
         localStorage.setItem('theme', 'light');
     }
-
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'light') enableLightMode();
     else enableDarkMode();
@@ -56,30 +55,41 @@ document.addEventListener('DOMContentLoaded', () => {
         historyList.prepend(li);
     }
 
-    // --- UPLOAD ---
+    // --- UPLOAD LOGIC ---
     if (attachBtn && fileInput) {
-        attachBtn.addEventListener('click', () => fileInput.click());
+        attachBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            fileInput.click();
+        });
 
         fileInput.addEventListener('change', async () => {
             const file = fileInput.files[0];
             if (!file) return;
             
-            addMessage(`📤 Analyse de "${file.name}"...`, 'bot');
+            addMessage(`📤 Analyse de "${file.name}" en cours...`, 'bot');
+            
             const formData = new FormData();
             formData.append('file', file);
 
             try {
                 const resp = await fetch('/api/upload', { method: 'POST', body: formData });
+                if (!resp.ok) throw new Error("Erreur serveur");
                 const data = await resp.json();
-                addMessage(data.status === 'success' ? `✅ ${data.message}` : `❌ Erreur: ${data.message}`, 'bot');
+                
+                if (data.status === 'success') {
+                    addMessage(`✅ ${data.message} Vous pouvez poser des questions dessus.`, 'bot');
+                } else {
+                    addMessage(`❌ Erreur: ${data.message}`, 'bot');
+                }
             } catch (e) {
-                addMessage("❌ Erreur réseau upload.", 'bot');
+                console.error(e);
+                addMessage("❌ Erreur réseau ou serveur.", 'bot');
             }
             fileInput.value = ''; 
         });
     }
 
-    // --- CHAT ---
+    // --- CHAT LOGIC ---
     function escapeHtml(str) {
         if (!str) return '';
         return String(str).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -102,13 +112,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!grouped[doc]) grouped[doc] = new Set();
                 grouped[doc].add(page);
             });
-            
             for (const [doc, pages] of Object.entries(grouped)) {
                 inner += `<li>${escapeHtml(doc)} (p. ${Array.from(pages).join(', ')})</li>`;
             }
             inner += '</ul>';
         }
-
         messageDiv.innerHTML = inner;
         chatBox.appendChild(messageDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
@@ -144,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
             chatHistory.push({ role: 'assistant', content: data.answer || '' });
         } catch (e) {
             loadingDiv.remove();
-            addMessage("Erreur technique.", 'bot');
+            addMessage("Erreur technique lors de la réponse.", 'bot');
         } finally {
             userInput.disabled = false;
             sendBtn.disabled = false;

@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot Cost Control</title>
-    <link rel="stylesheet" href="static/style.css?v=4">
+    <link rel="stylesheet" href="static/style.css?v=5">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/static/images/logo.png?v=3">
+    <link rel="icon" type="image/png" href="/static/images/logo.png">
 </head>
 <body class="dark-mode">
     
@@ -17,8 +17,7 @@
                 <h2>Historique</h2>
                 <button id="close-history" class="icon-btn" title="Fermer l'historique">✕</button>
             </div>
-            <ul id="history-list">
-                </ul>
+            <ul id="history-list"></ul>
         </aside>
 
         <div class="chat-container">
@@ -45,11 +44,19 @@
 
             <div id="chat-box" class="chat-box">
                 <div class="message bot-message">
-                    <p>Bonjour ! Je suis l'assistant du département Cost Control. Comment puis-je vous aider aujourd'hui ?</p>
+                    <p>Bonjour ! Je suis l'assistant du département Cost Control. Vous pouvez me poser des questions ou m'envoyer des documents PDF/Word.</p>
                 </div>
             </div>
 
             <form id="chat-form" class="input-area">
+                <input type="file" id="file-input" accept=".pdf,.docx" style="display: none;">
+                
+                <button type="button" id="attach-btn" title="Joindre un fichier">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
+                    </svg>
+                </button>
+            
                 <input type="text" id="user-input" placeholder="Posez votre question ici..." autocomplete="off" autofocus>
                 <button type="submit" id="send-btn" title="Envoyer">➤</button>
             </form>
@@ -61,6 +68,6 @@
         </div>
 
     </div> 
-    <script src="static/script.js"></script>
+    <script src="static/script.js?v=2"></script>
 </body>
 </html>
