@@ -31,12 +31,12 @@ load_dotenv()
 # Configuration
 # ----------------------------
 FOLDER = "Docu_Cost_notTechnip" 
-VECTOR_INDEX_PATH = "vector_index_cost_GPT"
+VECTOR_INDEX_PATH = "vector_index_cost_GPT5N"
 RETRIEVER_K = 6
 MAX_SOURCES_RETURN = 8
 
 OPENAI_CHAT_MODEL = "gpt-5-nano-2025-08-07"
-OPENAI_EMBEDDING_MODEL = "text-embedding-3-large"
+OPENAI_EMBEDDING_MODEL = "text-embedding-3-small"
 
 # Marqueurs
 MARKER_FR = "Le contexte fourni n'a pas de rapport avec cette question."
