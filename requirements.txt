@@ -22,3 +22,5 @@ openpyxl
 # --- Utilitaires ---
 python-dotenv
 langdetect
+pycryptodome
+
