@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot Cost Control</title>
-    <link rel="stylesheet" href="static/style.css?v=pro">
+    <link rel="stylesheet" href="static/style.css?v=4">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="/static/images/logo.png?v=3">
 </head>
@@ -15,9 +15,10 @@
         <aside id="history-sidebar">
             <div class="sidebar-header">
                 <h2>Historique</h2>
-                <button id="close-history" class="icon-btn" title="Fermer">✕</button>
+                <button id="close-history" class="icon-btn" title="Fermer l'historique">✕</button>
             </div>
-            <ul id="history-list"></ul>
+            <ul id="history-list">
+                </ul>
         </aside>
 
         <div class="chat-container">
@@ -32,9 +33,10 @@
                 
                 <div class="header-controls">
                     <button id="history-toggle" class="theme-toggle-button" title="Historique">
-                        <img src="static/images/historique.png" alt="Hist" class="nav-icon">
+                        <img src="static/images/historique.png" alt="Historique" class="nav-icon">
                     </button>
-                    <button id="theme-toggle" class="theme-toggle-button" title="Thème">
+                    
+                    <button id="theme-toggle" class="theme-toggle-button" title="Changer de thème">
                         <span class="icon-sun">☀️</span>
                         <span class="icon-moon">🌙</span>
                     </button>
@@ -43,19 +45,11 @@
 
             <div id="chat-box" class="chat-box">
                 <div class="message bot-message">
-                    <p>Bonjour ! Je suis l'assistant du département Cost Control. Posez une question sur les procédures ou joignez un PDF pour analyse.</p>
+                    <p>Bonjour ! Je suis l'assistant du département Cost Control. Comment puis-je vous aider aujourd'hui ?</p>
                 </div>
             </div>
 
-            <form id="chat-form">
-                <input type="file" id="file-input" accept=".pdf" style="display: none;">
-                
-                <button type="button" id="attach-btn" title="Joindre un PDF">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M21.44 11.05L12.25 20.24C11.1242 21.3658 9.59752 21.9983 8.00504 21.9983C6.41256 21.9983 4.88588 21.3658 3.76004 20.24C2.63419 19.1142 2.00171 17.5875 2.00171 15.995C2.00171 14.4025 2.63419 12.8759 3.76004 11.75L12.95 2.56003C13.7006 1.80947 14.7183 1.38782 15.7798 1.38782C16.8414 1.38782 17.8591 1.80947 18.6096 2.56003C19.3602 3.31059 19.7819 4.3283 19.7819 5.38983C19.7819 6.45135 19.3602 7.46906 18.6096 8.21962L9.41004 17.41C9.03476 17.7853 8.52588 17.9961 7.99524 17.9961C7.46461 17.9961 6.95573 17.7853 6.58045 17.41C6.20517 17.0347 5.99436 16.5259 5.99436 15.9952C5.99436 15.4646 6.20517 14.9557 6.58045 14.5804L15.07 6.09043" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </button>
-
+            <form id="chat-form" class="input-area">
                 <input type="text" id="user-input" placeholder="Posez votre question ici..." autocomplete="off" autofocus>
                 <button type="submit" id="send-btn" title="Envoyer">➤</button>
             </form>
@@ -67,6 +61,6 @@
         </div>
 
     </div> 
-    <script src="static/script.js?v=pro"></script>
+    <script src="static/script.js"></script>
 </body>
 </html>
