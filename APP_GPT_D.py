@@ -27,7 +27,7 @@ load_dotenv()
 
 # --- CONFIG ---
 FOLDER = "Docu_Cost_notTechnip" 
-VECTOR_INDEX_PATH = "vector_index_cost_GPT5"
+VECTOR_INDEX_PATH = "vector_index_cost_GPT"
 RETRIEVER_K = 6
 MAX_SOURCES_RETURN = 8
 OPENAI_CHAT_MODEL = "gpt-5-nano-2025-08-07"
