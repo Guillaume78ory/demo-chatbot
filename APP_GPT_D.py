@@ -125,7 +125,7 @@ excels_global: Dict[str, Dict[str, pd.DataFrame]] = {}
 locks_by_session: Dict[str, asyncio.Lock] = {}
 
 # ----------------------------
-# HELPERS
+# HELPERS (Extraction & Loading)
 # ----------------------------
 def extract_docs_from_pdf(path: str) -> List[Document]:
     docs: List[Document] = []
@@ -154,15 +154,37 @@ def extract_docs_from_docx(path: str) -> List[Document]:
         print(f"⚠️ Erreur lecture DOCX {path}: {e}")
     return docs
 
+# --- MODIFICATION : Chargement robuste avec logs détaillés ---
 def load_documents(folder: str) -> List[Document]:
     all_docs: List[Document] = []
-    if not os.path.exists(folder): return all_docs
-    files = [f for f in os.listdir(folder) if f.lower().endswith((".pdf", ".docx"))]
-    for file in files:
+    if not os.path.exists(folder): 
+        print(f"⚠️ Le dossier {folder} n'existe pas.")
+        return all_docs
+    
+    files = os.listdir(folder)
+    print(f"📂 Fichiers trouvés dans {folder}: {files}")
+    
+    valid_files = [f for f in files if f.lower().endswith((".pdf", ".docx")) and not f.startswith("~$")]
+
+    for file in valid_files:
         full_path = os.path.join(folder, file)
-        docs = extract_docs_from_pdf(full_path) if file.lower().endswith(".pdf") else extract_docs_from_docx(full_path)
-        all_docs.extend(docs)
-    print(f"chargé {len(all_docs)} pages/documents.")
+        docs = []
+        try:
+            if file.lower().endswith(".pdf"):
+                docs = extract_docs_from_pdf(full_path)
+            elif file.lower().endswith(".docx"):
+                docs = extract_docs_from_docx(full_path)
+            
+            if docs:
+                all_docs.extend(docs)
+                print(f"✅ Chargé: {file} ({len(docs)} pages)")
+            else:
+                print(f"⚠️ ATTENTION: Fichier vide ou illisible (0 texte extrait): {file}")
+                
+        except Exception as e:
+            print(f"❌ CRASH lors de la lecture du fichier {file}: {e}")
+
+    print(f"📊 Total global chargé: {len(all_docs)} pages/documents.")
     return all_docs
 
 def load_excel(path: str) -> Dict[str, pd.DataFrame]:
@@ -206,13 +228,31 @@ def extract_unique_sources(result_obj: Dict[str, Any], max_sources: int) -> List
             if len(out) >= max_sources: break
     return out
 
+# --- MODIFICATION : Détection intelligente de la langue ---
+def detect_language_smart(query: str) -> str:
+    """Détecte la langue avec correction pour les phrases courtes (commandes, salutations)."""
+    query_clean = query.strip().lower()
+    
+    # Force le Français si mots-clés évidents et phrase courte
+    french_keywords = ["oui", "non", "vas-y", "vas y", "merci", "bonjour", "salut", "d'accord", "ok", "c'est", "ça", "plaît", "stp", "continue", "encore"]
+    if len(query_clean) < 50:
+        # Vérifie si un mot-clé est présent (encadré par des espaces ou début/fin)
+        if any(word in query_clean for word in french_keywords):
+            return 'fr'
+
+    try:
+        lang = detect(query)
+        return lang
+    except LangDetectException:
+        return 'en' # Fallback anglais
+
 # ----------------------------
 # CORE RAG
 # ----------------------------
 def get_or_create_vector_db(docs: List[Document], index_path: str = VECTOR_INDEX_PATH):
     embeddings = OpenAIEmbeddings(model=OPENAI_EMBEDDING_MODEL)
     
-    # Tentative chargement (pour les environnements persistants, pas Railway ephemeral)
+    # Sur Railway (ephemeral), on va souvent recréer l'index
     if os.path.exists(index_path) and os.path.exists(os.path.join(index_path, "index.faiss")):
         try:
             print(f"Chargement de l'index FAISS depuis '{index_path}'...")
@@ -300,7 +340,7 @@ async def upload_document(file: UploadFile = File(...)):
         return JSONResponse({"status": "error", "message": "Format invalide (PDF/DOCX)."})
 
     if not new_docs:
-        return JSONResponse({"status": "error", "message": "Aucun texte trouvé."})
+        return JSONResponse({"status": "error", "message": "Aucun texte trouvé (fichier vide ou image ?)."})
 
     if vectorstore_global:
         try:
@@ -312,7 +352,6 @@ async def upload_document(file: UploadFile = File(...)):
         except Exception as e:
             return JSONResponse({"status": "error", "message": f"Erreur indexation: {str(e)}"})
     else:
-        # Si pas d'index (aucun fichier au départ), on l'initialise
         try:
             vectorstore_global = get_or_create_vector_db(new_docs)
             chatbot_instances['fr'] = create_chatbot(vectorstore_global, PROMPT_FR)
@@ -334,8 +373,8 @@ async def chat_endpoint(request: ChatRequest):
         excel_answer, excel_sources = analyse_excel(query, excels_global)
         if excel_answer: return JSONResponse({"answer": excel_answer, "sources": excel_sources or []})
         
-        try: lang = detect(query)
-        except LangDetectException: lang = 'en'
+        # Utilisation de la détection SMART
+        lang = detect_language_smart(query)
         
         chatbot_instance = chatbot_instances.get(lang, chatbot_instances.get('en'))
         if not chatbot_instance: return JSONResponse({"answer": "⚠️ Chatbot non prêt (ajoutez des documents).", "sources": []})
