@@ -139,3 +139,55 @@ form#chat-form {
 .loading-dot:nth-child(2) { animation-delay: -0.16s; }
 @keyframes dot-bounce { 0%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-6px); } }
 .message.highlight { box-shadow: 0 0 0 3px var(--primary-color); transition: box-shadow 0.3s; }
+
+/* ---------------------------------------------------- */
+/* --- SCROLLBAR CUSTOMIZATION (Moderne & Sombre) --- */
+/* ---------------------------------------------------- */
+
+/* Configuration générale (Largeur) */
+::-webkit-scrollbar {
+    width: 10px;  /* Largeur de la barre verticale */
+    height: 10px; /* Hauteur de la barre horizontale */
+}
+
+/* --- DARK MODE (Par défaut pour body.dark-mode) --- */
+body.dark-mode ::-webkit-scrollbar-track {
+    background: var(--bg-dark); /* Le fond de la piste correspond au fond de l'app */
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+    background-color: var(--border-dark); /* Couleur de la poignée (gris foncé) */
+    border-radius: 5px; /* Arrondi */
+    border: 2px solid var(--bg-dark); /* Petite marge pour effet flottant */
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-color); /* Devient bleu au survol */
+}
+
+/* Support Firefox Dark */
+body.dark-mode * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-dark) var(--bg-dark);
+}
+
+/* --- LIGHT MODE --- */
+body.light-mode ::-webkit-scrollbar-track {
+    background: var(--bg-light);
+}
+
+body.light-mode ::-webkit-scrollbar-thumb {
+    background-color: var(--border-light);
+    border-radius: 5px;
+    border: 2px solid var(--bg-light);
+}
+
+body.light-mode ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--primary-color);
+}
+
+/* Support Firefox Light */
+body.light-mode * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-light) var(--bg-light);
+}
